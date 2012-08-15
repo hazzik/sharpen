@@ -21,20 +21,41 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 package sharpen.core.csharp.ast;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class CSDeclarationExpression extends CSExpression {
 
-	private CSVariableDeclaration _declaration;
+	private CSTypeReferenceExpression _type;
+	private List<CSDeclarationExpressionFragment> _fragments = new ArrayList<CSDeclarationExpressionFragment>();
 
-	public CSDeclarationExpression(CSVariableDeclaration declaration) {
-		_declaration = declaration;
+	public CSDeclarationExpression(CSTypeReferenceExpression type) {
+		_type = type;
 	}
 	
-	public CSVariableDeclaration declaration() {
-		return _declaration;
+	public CSDeclarationExpression(CSTypeReferenceExpression type, String name, CSExpression initializer) {
+		_type = type;
+		_fragments.add(new CSDeclarationExpressionFragment(name, initializer));
+	}
+	
+	public CSTypeReferenceExpression type() {
+		return _type;
 	}
 
+	public void addFragment(CSDeclarationExpressionFragment fragment) {
+		_fragments.add(fragment);
+	}
+	
+	public void addFragment(String name, CSExpression initializer) {
+		_fragments.add(new CSDeclarationExpressionFragment(name, initializer));
+	}
+	
+	public List<CSDeclarationExpressionFragment> fragments() {
+		return Collections.unmodifiableList(_fragments);
+	}
+	
 	public void accept(CSVisitor visitor) {
 		visitor.visit(this);
 	}
-
 }
