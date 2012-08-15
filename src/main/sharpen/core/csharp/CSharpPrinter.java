@@ -413,7 +413,20 @@ public class CSharpPrinter extends CSVisitor {
 	}
 	
 	public void visit(CSDeclarationExpression node) {
-		node.declaration().accept(this);
+		node.type().accept(this);
+		write(" ");
+		Boolean addComma = false;
+		for(CSDeclarationExpressionFragment fragment : node.fragments()) {
+			if(addComma)
+				write(", ");
+			else
+				addComma = true;
+			write(fragment.name());
+			if(fragment.initializer() != null) {
+				write(" = ");
+				fragment.initializer().accept(this);
+			}
+		}
 	}
 
 	private void writeDeclaration(CSTypeReferenceExpression type, String name, CSExpression initializer) {

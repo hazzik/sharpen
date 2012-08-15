@@ -1692,8 +1692,7 @@ public class CSharpBuilder extends ASTVisitor {
 
 	private CSDeclarationExpression newVariableDeclarationExpression(final String name,
             final CSTypeReferenceExpression type, final CSReferenceExpression initializer) {
-	    return new CSDeclarationExpression(
-	    	new CSVariableDeclaration(name, type, initializer));
+	    return new CSDeclarationExpression(type, name, initializer);
     }
 
 	private CSProperty newPropertyFor(MethodDeclaration node, final String propName) {
@@ -2133,11 +2132,19 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	public boolean visit(VariableDeclarationExpression node) {
-		pushExpression(new CSDeclarationExpression(createVariableDeclaration((VariableDeclarationFragment) node
-		        .fragments().get(0))));
+		CSTypeReferenceExpression mappedTypeReference = mappedTypeReference(node.getType());
+		CSDeclarationExpression expr = new CSDeclarationExpression(mappedTypeReference);
+		for (Object f : node.fragments()) {
+			VariableDeclarationFragment variable = (VariableDeclarationFragment) f;
+			if(variable.getExtraDimensions() > 0)
+				warning(variable, "Extra dimensions are not supported");
+			expr.addFragment(formatVariableName(variable.resolveBinding()),
+					mapExpression(variable.getInitializer()));
+		}
+		pushExpression(expr);
 		return false;
 	}
-
+	
 	public boolean visit(VariableDeclarationStatement node) {
 		for (Object f : node.fragments()) {
 			VariableDeclarationFragment variable = (VariableDeclarationFragment) f;
@@ -2155,6 +2162,11 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private CSVariableDeclaration createVariableDeclaration(IVariableBinding binding, CSExpression initializer) {
+		return new CSVariableDeclaration(formatVariableName(binding), mappedTypeReference(binding.getType()),
+		        initializer);
+	}
+	
+	private String formatVariableName(IVariableBinding binding) {
 		String name = binding.getName();
 		if (_blockVariables.size() > 0) {
 			if (_blockVariables.peek().contains(name)) {
@@ -2169,8 +2181,7 @@ public class CSharpBuilder extends ASTVisitor {
 			for (Set<String> s : _blockVariables)
 				s.add(name);
 		}
-		return new CSVariableDeclaration(identifier(name), mappedTypeReference(binding.getType()),
-		        initializer);
+		return identifier(name);
 	}
 
 	public boolean visit(ExpressionStatement node) {
