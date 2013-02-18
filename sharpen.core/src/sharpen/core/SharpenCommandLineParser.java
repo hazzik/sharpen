@@ -93,6 +93,8 @@ class SharpenCommandLineParser extends CommandLineParser {
 			_cmdLine.maxColumns = Integer.parseInt(consumeNext());
 		} else if (areEqual(arg, "-nativeInterfaces")) {
 			_cmdLine.nativeInterfaces = true;
+		} else if (areEqual(arg, "-separateInterfaceConstants")) {
+			_cmdLine.separateInterfaceConstants = true;
 		} else if (areEqual(arg, "-organizeUsings")) {
 			_cmdLine.organizeUsings = true;
 		} else if (areEqual(arg, "-continueOnError")) {

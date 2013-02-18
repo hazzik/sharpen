@@ -90,6 +90,8 @@ public abstract class Configuration {
 
 	private boolean _nativeInterfaces;
 	
+	private boolean _separateInterfaceConstants;
+
 	private boolean _organizeUsings;
 	
 	private boolean _paramCountFileNames;
@@ -405,6 +407,14 @@ public abstract class Configuration {
 		_nativeInterfaces = true;
 	}
 	
+	public boolean separateInterfaceConstants() {
+		return _separateInterfaceConstants;
+	}
+
+	public void enableSeparateInterfaceConstants() {
+		_separateInterfaceConstants = true;
+	}
+
 	public void enableOrganizeUsings() {
 		_organizeUsings = true;
 	}
