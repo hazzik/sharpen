@@ -47,6 +47,8 @@ public class NameScopeImpl implements NameScope {
 			}
 
 			return methodsList.toArray(new MethodDeclaration[methodsList.size()]);
+		} else if(node instanceof AnnotationTypeDeclaration) {
+			return new MethodDeclaration[0];
 		} else {
 			throw new UnsupportedOperationException("not implemented");
 		}
