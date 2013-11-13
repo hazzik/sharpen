@@ -32,9 +32,9 @@ public class PascalCaseNamingStrategy extends PascalCaseIdentifiersNamingStrateg
 	
 	@Override
 	public String identifier(String name) {
-		if (isAllUpper(name)) {
-			return super.identifier(fromJavaConstantName(name));
-		}
+		//if (isAllUpper(name)) {
+		//	return super.identifier(fromJavaConstantName(name));
+		//}
 		return super.identifier(name);
 	}
 
