@@ -170,6 +170,7 @@ public class DefaultConfiguration extends Configuration {
 		mapMethod("junit.framework.Assert.assertNull", "NUnit.Framework.Assert.IsNull");
 		mapMethod("junit.framework.Assert.assertSame", "NUnit.Framework.Assert.AreSame");
 		mapMethod("junit.framework.Assert.assertNotSame", "NUnit.Framework.Assert.AreNotSame");
+		mapMethod("junit.framework.Assert.fail", "NUnit.Framework.Assert.Fail");
 	    
 		// JUnit 4
 		mapNamespace("org.junit", "NUnit.Framework");
