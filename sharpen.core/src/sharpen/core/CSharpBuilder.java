@@ -32,7 +32,6 @@ import sharpen.core.Configuration.*;
 import sharpen.core.csharp.ast.*;
 import sharpen.core.framework.*;
 import static sharpen.core.framework.StaticImports.*;
-
 import static sharpen.core.framework.Environments.*;
 
 public class CSharpBuilder extends ASTVisitor {
@@ -195,9 +194,34 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	@Override
-	public boolean visit(AnnotationTypeDeclaration node) {
-		// TODO: SHA-51
+	public boolean visit(final AnnotationTypeDeclaration node) {
+		if (processIgnoredType(node)) {
+			return false;
+		}
+
+		try {
+			my(NameScope.class).enterTypeDeclaration(node);
+			
+			_ignoreExtends.using(ignoreExtends(node), new Runnable() {
+				public void run() {
+					processAnnotationTypeDeclaration(node);
+				}
+			});
+
+		} finally {
+			my(NameScope.class).leaveTypeDeclaration(node);
+		}
+
 		return false;
+	}
+
+	private void processAnnotationTypeDeclaration(AnnotationTypeDeclaration node) {
+		final CSClass theAttribute = new CSClass(typeName(node), CSClassModifier.Sealed);
+		theAttribute.addBaseType(new CSTypeReference("System.Attribute"));
+		mapVisibility(node, theAttribute);
+		mapMembers(node, theAttribute, null);
+		mapJavadoc(node, theAttribute);
+		addType(node.resolveBinding(), theAttribute);
 	}
 
 	@Override
@@ -278,7 +302,6 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	public boolean visit(final TypeDeclaration node) {
-
 		if (processIgnoredType(node)) {
 			return false;
 		}
@@ -436,7 +459,7 @@ public class CSharpBuilder extends ASTVisitor {
 		
 		moveInitializersDependingOnThisReferenceToConstructor(type);
 		
-		if (_configuration.junitConversion() && hasTests (type))
+		if (_configuration.junitConversion() && hasTests (type) && !isLegacyTestFixture(node.resolveBinding()))
 			type.addAttribute(new CSAttribute ("NUnit.Framework.TestFixture"));
 	
 		return type;
@@ -880,7 +903,7 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private void mapMembers(AbstractTypeDeclaration node, CSTypeDeclaration type, CSTypeDeclaration auxillaryType) {
-		if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration)) {
+		if (!(node instanceof TypeDeclaration) && !(node instanceof EnumDeclaration) && !(node instanceof AnnotationTypeDeclaration)) {
 			unsupportedConstruct(node, "Cannot map members for node.");
 		}
 
@@ -1466,6 +1489,15 @@ public class CSharpBuilder extends ASTVisitor {
 		} else {
 			_instanceInitializers.add(node);
 		}
+		return false;
+	}
+	
+	@Override
+	public boolean visit(AnnotationTypeMemberDeclaration node) {
+		// TODO: FIXME!
+		// TODO: handle defaults
+		CSField field = new CSField(mappedMethodName(node.resolveBinding()), mappedTypeReference(node.getType()), CSVisibility.Public);
+		_currentType.addMember(field);
 		return false;
 	}
 
