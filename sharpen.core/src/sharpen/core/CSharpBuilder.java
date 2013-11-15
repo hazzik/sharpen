@@ -1521,6 +1521,11 @@ public class CSharpBuilder extends ASTVisitor {
 			return false;
 		}
 
+		if (isDetectedProperty(node)) {
+			processDetectedPropertyDeclaration(node);
+			return false;
+		}
+
 		if (isIndexer(node)) {
 			processIndexerDeclaration(node);
 			return false;
@@ -1528,6 +1533,20 @@ public class CSharpBuilder extends ASTVisitor {
 
 		processMethodDeclaration(node);
 
+		return false;
+	}
+
+	private boolean isDetectedProperty(BodyDeclaration node) {
+		if (_configuration.getAutomaticDetectProperties() && node instanceof MethodDeclaration) {
+			MethodDeclaration method = (MethodDeclaration)node;
+			String name = method.getName().toString();
+			if ((name.startsWith("get") || name.startsWith("is")) && method.parameters().size() == 0){
+				return isGetter(method);
+			}
+			if ((name.startsWith("set") || name.startsWith("is")) && method.parameters().size() == 1){
+				return !isGetter(method);
+			}	
+		}
 		return false;
 	}
 
@@ -1563,6 +1582,16 @@ public class CSharpBuilder extends ASTVisitor {
 		processPropertyDeclaration(node, mappedMethodName(node));
 	}
 
+	private void processDetectedPropertyDeclaration(MethodDeclaration node) {
+		String name = node.getName().toString();
+		if (name.startsWith("is")){
+			name = name.substring(2);
+		} else {
+			name = name.substring(3);
+		}
+		processPropertyDeclaration(node, name);
+	}
+
 	private void processPropertyDeclaration(MethodDeclaration node, final String name) {
 		mapPropertyDeclaration(node, producePropertyFor(node, name));
 	}
@@ -1581,7 +1610,7 @@ public class CSharpBuilder extends ASTVisitor {
 		CSMember existingProperty = _currentType.getMember(name);
 		if (existingProperty != null) {
 			if (! (existingProperty instanceof CSProperty)) {
-				throw new IllegalArgumentException(sourceInformation(node) + ": Previously declared member redeclared as property.");
+				throw new IllegalArgumentException(sourceInformation(node) + ": Previously declared member redeclared as property. " + node.getName().toString() + " " + existingProperty.name() + " " + existingProperty.getClass().getName());
 			}
 		}
 		return (CSProperty) existingProperty;
@@ -1648,7 +1677,8 @@ public class CSharpBuilder extends ASTVisitor {
 	
 	private boolean isProperty(BodyDeclaration node) {
 		return isTaggedAsProperty(node)
-			|| isMappedToProperty(node);
+			|| isMappedToProperty(node)
+			|| isDetectedProperty(node);
 	}
 
 	private boolean isTaggedAsProperty(BodyDeclaration node) {

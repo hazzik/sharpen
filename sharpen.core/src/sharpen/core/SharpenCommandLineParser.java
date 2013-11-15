@@ -87,6 +87,8 @@ class SharpenCommandLineParser extends CommandLineParser {
 			_cmdLine.nativeTypeSystem = true;
 		} else if (areEqual(arg, "-indentWithSpaces")) {
 			_cmdLine.indentWithSpaces = true;
+		} else if (areEqual(arg, "-automaticDetectProperties")) {
+			_cmdLine.automaticDetectProperties = true;
 		} else if (areEqual(arg, "-indentSize")) {
 			_cmdLine.indentSize = Integer.parseInt(consumeNext());
 		} else if (areEqual(arg, "-maxColumns")) {

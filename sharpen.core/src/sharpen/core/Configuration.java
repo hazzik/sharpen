@@ -78,6 +78,8 @@ public abstract class Configuration {
 	
 	private NamingStrategy _namingStrategy = NamingStrategy.DEFAULT;
 
+	private boolean _automaticDetectProperties;
+
 	private String _indentString;
 
 	private int _maxColumns;
@@ -223,6 +225,14 @@ public abstract class Configuration {
 		return _docOverlay;
 	}
 	
+	public boolean getAutomaticDetectProperties() {
+		return _automaticDetectProperties;
+	}
+
+	public void enableAutomaticDetectProperies() {
+		_automaticDetectProperties = true;
+	}
+
 	public String getIndentString() {
 		return _indentString;
 	}
