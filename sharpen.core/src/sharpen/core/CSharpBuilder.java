@@ -1366,7 +1366,6 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	public boolean visit(FieldDeclaration node) {
-
 		if (SharpenAnnotations.hasIgnoreAnnotation(node)) {
 			return false;
 		}
@@ -1381,6 +1380,7 @@ public class CSharpBuilder extends ASTVisitor {
 			VariableDeclarationFragment fragment = (VariableDeclarationFragment) item;
 			ITypeBinding saved = pushExpectedType(fieldType);
 			CSField field = mapFieldDeclarationFragment(node, fragment, typeName, visibility);
+
 			popExpectedType(saved);
 			adjustVisibility (fieldType, field);
 
@@ -1397,6 +1397,9 @@ public class CSharpBuilder extends ASTVisitor {
 
 	private CSField mapFieldDeclarationFragment(FieldDeclaration node, VariableDeclarationFragment fragment,
 	        CSTypeReferenceExpression fieldType, CSVisibility fieldVisibility) {
+		if (fragment.getExtraDimensions() > 0) {
+			fieldType = new CSArrayTypeReference(fieldType, fragment.getExtraDimensions());
+		}
 		CSField field = new CSField(fieldName(fragment), fieldType, fieldVisibility, mapFieldInitializer(fragment));
 		if (isConstField(node, fragment)) {
 			field.addModifier(CSFieldModifier.Const);
@@ -2217,7 +2220,15 @@ public class CSharpBuilder extends ASTVisitor {
 
 	public boolean visit(TryStatement node) {
 		CSTryStatement stmt = new CSTryStatement(node.getStartPosition());
-		visitBlock(stmt.body(), node.getBody());
+		CSBlock body = stmt.body();
+		for (Object resource : node.resources()) {
+			VariableDeclarationExpression expression = (VariableDeclarationExpression) resource;
+			expression.accept(this);
+			CSUsingStatement using = new CSUsingStatement(expression.getStartPosition(), popExpression());
+			body.addStatement(using);
+			body = using.body();
+		}
+		visitBlock(body, node.getBody());
 		for (Object o : node.catchClauses()) {
 			CatchClause clause = (CatchClause) o;
 			if (!_configuration.isIgnoredExceptionType(qualifiedName(clause.getException().getType().resolveBinding()))) {
@@ -2231,10 +2242,8 @@ public class CSharpBuilder extends ASTVisitor {
 		}
 
 		if (null != stmt.finallyBlock() || !stmt.catchClauses().isEmpty()) {
-
 			addStatement(stmt);
 		} else {
-
 			_currentBlock.addAll(stmt.body());
 		}
 		return false;

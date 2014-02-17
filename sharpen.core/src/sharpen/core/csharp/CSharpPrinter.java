@@ -38,8 +38,8 @@ public class CSharpPrinter extends CSVisitor {
 	public CSharpPrinter() {
 	}
 	
-	public void setWriter(Writer writer, String indentString) {
-		_writer = new IndentedWriter(writer);
+	public void setWriter(Writer writer, String indentString, int maxColumns) {
+		_writer = new IndentedWriter(writer, maxColumns);
 		if (indentString != null) {
 			_writer.setIndentString(indentString);
 		}
@@ -136,7 +136,17 @@ public class CSharpPrinter extends CSVisitor {
 	public void visit(CSUsing node) {
 		writeLine("using " + node.namespace() + ";");
 	}
-	
+
+	@Override
+	public void visit(CSUsingStatement node) {
+		printPrecedingComments(node);
+
+		writeIndented("using (");
+		node.expression().accept(this);
+		writeLine(")");
+		node.body().accept(this);
+	}
+
 	public void visit(CSClass node) {
 		writeType(node);
 	}
@@ -232,9 +242,12 @@ public class CSharpPrinter extends CSVisitor {
 		if (parameters.isEmpty()) return;
 		for (CSTypeParameter tp : parameters) {
 			if (tp.superClass() != null) {
-				write (" where ");
-				write (tp.name() + ":");
+				writeLine();
+				indent();
+				writeIndented("where ");
+				write (tp.name() + " : ");
 				tp.superClass().accept(this);
+				outdent();
 			}
 		}
 	}
@@ -311,8 +324,11 @@ public class CSharpPrinter extends CSVisitor {
 		write(_currentType.name());
 		writeParameterList(node);
 		if (null != node.chainedConstructorInvocation()) {
-			write(" : ");
+			writeLine();
+			indent();
+			writeIndented(": ");
 			writeMethodInvocation(node.chainedConstructorInvocation());
+			outdent();
 		}
 		writeLine();
 		node.body().accept(this);

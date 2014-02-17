@@ -89,6 +89,8 @@ class SharpenCommandLineParser extends CommandLineParser {
 			_cmdLine.indentWithSpaces = true;
 		} else if (areEqual(arg, "-indentSize")) {
 			_cmdLine.indentSize = Integer.parseInt(consumeNext());
+		} else if (areEqual(arg, "-maxColumns")) {
+			_cmdLine.maxColumns = Integer.parseInt(consumeNext());
 		} else if (areEqual(arg, "-nativeInterfaces")) {
 			_cmdLine.nativeInterfaces = true;
 		} else if (areEqual(arg, "-separateInterfaceConstants")) {
@@ -115,6 +117,9 @@ class SharpenCommandLineParser extends CommandLineParser {
 			String from = consumeNext();
 			String to = consumeNext();
 			_cmdLine.memberMappings.put(from, new Configuration.MemberMapping(to, MemberKind.Field));
+		} else if (areEqual(arg, "-indexerMapping")) {
+			String from = consumeNext();
+			_cmdLine.memberMappings.put(from, new Configuration.MemberMapping(null, MemberKind.Indexer));
 		} else if (areEqual(arg, "-makePartial")){
 			_cmdLine.partialTypes.add (consumeNext());
 		} else if (areEqual(arg, "-runtimeTypeName")){
