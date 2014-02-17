@@ -106,7 +106,6 @@ public class SharpenApplication implements IApplication {
 		
 		ods("Pascal case mode: " + _args.pascalCase);
 		configuration.setNamingStrategy(_args.pascalCase.getNamingStrategy());
-		configuration.setMaxColumns(_args.maxColumns);
 		if (_args.indentWithSpaces) {
 			ods("Using spaces for indentation.");
 			StringBuilder indent = new StringBuilder(_args.indentSize);

@@ -80,8 +80,6 @@ public abstract class Configuration {
 
 	private String _indentString;
 
-	private int _maxColumns;
-
 	private boolean _nativeTypeSystem = false;
 	
 	private boolean _ignoreErrors = false;
@@ -229,14 +227,6 @@ public abstract class Configuration {
 
 	public void setIndentString(String indentString) {
 		this._indentString = indentString;
-	}
-
-	public int getMaxColumns() {
-		return _maxColumns;
-	}
-
-	public void setMaxColumns(int value){
-		_maxColumns = value;
 	}
 
 	public void enableNativeTypeSystem() {
@@ -570,4 +560,5 @@ public abstract class Configuration {
 	}
 
 	public abstract boolean mapByteToSbyte();
+
 }

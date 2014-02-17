@@ -66,7 +66,6 @@ public class SharpenCommandLine {
 	public PascalCaseOptions pascalCase = PascalCaseOptions.None;
 	public boolean indentWithSpaces;
 	public int indentSize = 4;
-	public int maxColumns = 80;
 	public String project;
 	final public List<String> classpath = new ArrayList<String>();
 	final public List<String> sourceFolders = new ArrayList<String>();

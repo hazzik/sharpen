@@ -27,11 +27,12 @@ import java.io.StringReader;
 import java.io.Writer;
 
 public class IndentedWriter {
+
+	private static final int MAX_COLUMNS = 80;
+
 	String _lineSeparator = System.getProperty("line.separator");
 
 	String _indentString = "\t";
-	
-	int _maxColumns = 80;
 
 	int _indentLevel = 0;
 
@@ -52,14 +53,6 @@ public class IndentedWriter {
 	public void setIndentString(String indentString) {
 		this._indentString = indentString;
 	}
-	
-	public int getMaxColumns() {
-		return _maxColumns;
-	}
-
-	public void setMaxColumns(int value) {
-		_maxColumns = value;
-	}
 
 	public void indent() {
 		++_indentLevel;
@@ -77,10 +70,11 @@ public class IndentedWriter {
 	public void writeIndentedLine(String s) {
 		writeIndentation();
 		writeLine(s);
+
 	}
 
 	public void write(String s) {
-		if (_column > _maxColumns) {
+		if (_column > MAX_COLUMNS) {
 			writeLine();
 			writeIndented(_indentString);
 		}
