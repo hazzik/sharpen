@@ -24,10 +24,10 @@ public abstract class ConversionBatch {
 		
 		@SuppressWarnings("unchecked")
 		Map<String, String> options = JavaCore.getOptions();
-		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_7);
+		options.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_1_8);
 		options.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM,
-				JavaCore.VERSION_1_7);
-		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_7);
+				JavaCore.VERSION_1_8);
+		options.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_1_8);
 		_parser.setCompilerOptions(options);
 	}
 
