@@ -1,0 +1,34 @@
+namespace lambdas
+{
+	public class TryCatch
+	{
+		public virtual void run()
+		{
+			java.util.stream.IntStream.range(0, 5).peek(new _IntConsumer_9(i, e));
+		}
+
+		private sealed class _IntConsumer_9 : java.util.function.IntConsumer
+		{
+			public void accept(int i)
+			{
+				try
+				{
+					java.util.concurrent.TimeUnit.MILLISECONDS.sleep(50);
+				}
+				catch (System.Exception)
+				{
+				}
+			}
+
+			private readonly int i;
+
+			private readonly System.Exception e;
+
+			public _IntConsumer_9(int i, System.Exception e)
+			{
+				this.i = i;
+				this.e = e;
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+package lambdas;
+
+import java.util.function.BiFunction;
+
+public class MultiArgumentLambda {
+	public void passLambda() throws Exception {
+		acceptingLambda((x, y) -> x + y);
+	}
+
+	public Integer acceptingLambda(BiFunction<Integer, Integer, Integer> f) throws Exception {
+		return f.apply(1, 2);
+	}
+}

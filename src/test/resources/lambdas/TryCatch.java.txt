@@ -1,0 +1,18 @@
+package lambdas;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
+
+public class TryCatch {
+	public void run() {
+		IntStream.range(0,5).peek(i -> {
+					try {
+						TimeUnit.MILLISECONDS.sleep(50);
+					}
+					catch (  InterruptedException e) {
+					}
+				}
+		);
+	}
+}

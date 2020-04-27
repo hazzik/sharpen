@@ -26,6 +26,16 @@ public class LambdaExpressionConversionTest extends AbstractConversionTestCase {
 		runResourceTestCase("GenericLambda");
 	}
 
+	@Test
+	public void testMultiArgumentLambda() throws Throwable {
+		runResourceTestCase("MultiArgumentLambda");
+	}
+
+	@Test
+	public void testTryCatch() throws Throwable {
+		runResourceTestCase("TryCatch");
+	}
+
 	@Override
 	protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
 		super.runResourceTestCase(resourcePath(resourceName));

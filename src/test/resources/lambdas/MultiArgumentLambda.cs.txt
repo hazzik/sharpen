@@ -1,0 +1,36 @@
+namespace lambdas
+{
+	public class MultiArgumentLambda
+	{
+		/// <exception cref="System.Exception"/>
+		public virtual void passLambda()
+		{
+			acceptingLambda(new _BiFunction_7(x, y));
+		}
+
+		private sealed class _BiFunction_7 : java.util.function.BiFunction<int, int, int>
+		{
+			public int apply(int x, int y)
+			{
+				return x + y;
+			}
+
+			private readonly int x;
+
+			private readonly int y;
+
+			public _BiFunction_7(int x, int y)
+			{
+				this.x = x;
+				this.y = y;
+			}
+		}
+
+		/// <exception cref="System.Exception"/>
+		public virtual int acceptingLambda(java.util.function.BiFunction<int, int, int> f
+			)
+		{
+			return f.apply(1, 2);
+		}
+	}
+}
