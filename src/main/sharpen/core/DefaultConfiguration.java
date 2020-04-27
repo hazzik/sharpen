@@ -177,7 +177,8 @@ public class DefaultConfiguration extends Configuration {
 		mapMethod("junit.framework.Assert.assertNull", "NUnit.Framework.Assert.IsNull");
 		mapMethod("junit.framework.Assert.assertSame", "NUnit.Framework.Assert.AreSame");
 		mapMethod("junit.framework.Assert.assertNotSame", "NUnit.Framework.Assert.AreNotSame");
-	    
+		mapMethod("junit.framework.Assert.fail", "NUnit.Framework.Assert.Fail");
+
 		// JUnit 4
 		mapNamespace("org.junit", "NUnit.Framework");
 		mapMethod("org.junit.Assert.assertEquals", "NUnit.Framework.Assert.AreEqual");
@@ -187,6 +188,7 @@ public class DefaultConfiguration extends Configuration {
 		mapMethod("org.junit.Assert.assertNull", "NUnit.Framework.Assert.IsNull");
 		mapMethod("org.junit.Assert.assertSame", "NUnit.Framework.Assert.AreSame");
 		mapMethod("org.junit.Assert.assertNotSame", "NUnit.Framework.Assert.AreNotSame");
+		mapMethod("org.junit.Assert.assertThat", "NUnit.Framework.Assert.That");
 		mapMethod("org.junit.Assert.fail", "NUnit.Framework.Assert.Fail");
 		mapType("org.junit.Assert", "NUnit.Framework.Assert");
 		mapType("org.junit.Before", "NUnit.Framework.SetUp");

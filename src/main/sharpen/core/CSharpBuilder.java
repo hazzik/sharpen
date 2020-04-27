@@ -464,7 +464,7 @@ public class CSharpBuilder extends ASTVisitor {
 		
 		moveInitializersDependingOnThisReferenceToConstructor(type);
 		
-		if (_configuration.junitConversion() && hasTests (type))
+		if (_configuration.junitConversion() && hasTests (type) && !isLegacyTestFixture(node.resolveBinding()))
 			type.addAttribute(new CSAttribute ("NUnit.Framework.TestFixture"));
 	
 		return type;
