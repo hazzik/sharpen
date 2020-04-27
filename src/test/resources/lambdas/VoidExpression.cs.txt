@@ -1,0 +1,29 @@
+namespace lambdas
+{
+	public class VoidExpression
+	{
+		public virtual void run()
+		{
+			java.lang.Runnable x = new _Runnable_7(this);
+		}
+
+		private sealed class _Runnable_7 : java.lang.Runnable
+		{
+			public void run()
+			{
+				this._enclosing.test();
+			}
+
+			private readonly VoidExpression _enclosing;
+
+			public _Runnable_7(VoidExpression _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		public virtual void test()
+		{
+		}
+	}
+}

@@ -4091,6 +4091,10 @@ public class CSharpBuilder extends ASTVisitor {
 		return type.getErasure() == javaLangClassBinding();
 	}
 
+	protected boolean isJavaLangVoid(ITypeBinding type) {
+		return type.getQualifiedName().equals("void");
+	}
+
 	private ITypeBinding javaLangClassBinding() {
 		return resolveWellKnownType("java.lang.Class");
 	}

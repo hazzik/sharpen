@@ -155,10 +155,10 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 	}
 
 	private void setUpMethod() {
-		final IMethodBinding binding = _node.resolveMethodBinding();
-		CSMethod method = new CSMethod(mappedMethodName(binding));
+		final IMethodBinding methodBinding = _node.resolveMethodBinding();
+		CSMethod method = new CSMethod(mappedMethodName(methodBinding));
 		method.visibility(CSVisibility.Public);
-		method.returnType(mappedTypeReference(binding.getReturnType()));
+		method.returnType(mappedTypeReference(methodBinding.getReturnType()));
 		for (Object p : _node.parameters()) {
 			mapParameter((VariableDeclaration) p, method);
 		}
@@ -169,7 +169,12 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 		if (body instanceof Block) {
 			body.accept(this);
 		} else {
-			method.body().addStatement(new CSReturnStatement(-1, mapExpression((Expression) body)));
+			Expression expression = (Expression) body;
+			if (isJavaLangVoid(methodBinding.getReturnType())) {
+				method.body().addStatement(mapExpression(expression));
+			} else {
+				method.body().addStatement(new CSReturnStatement(-1, mapExpression(expression)));
+			}
 		}
 		_currentBlock = saved;
 

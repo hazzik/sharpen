@@ -1,0 +1,12 @@
+package lambdas;
+
+import java.util.function.Function;
+
+public class VoidExpression {
+	public void run() {
+		Runnable x = () -> test();
+	}
+
+	public void test () {
+	}
+}
