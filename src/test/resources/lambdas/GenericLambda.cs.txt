@@ -10,17 +10,17 @@ namespace lambdas
 
 		private sealed class _Function_7 : java.util.function.Function<bool, bool>
 		{
-			public _Function_7(bool z)
-			{
-				this.z = z;
-			}
-
 			public bool apply(bool z)
 			{
 				return z;
 			}
 
 			private readonly bool z;
+
+			public _Function_7(bool z)
+			{
+				this.z = z;
+			}
 		}
 
 		/// <exception cref="System.Exception"/>

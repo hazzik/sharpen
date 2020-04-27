@@ -50,8 +50,11 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 		setUpAnonymousType();
 		setUpConstructor();
 		setUpMethod();
-		int capturedVariableCount = flushCapturedVariables();
-		flushInstanceInitializers(_type, capturedVariableCount);
+		flushCapturedVariables();
+		if (_constructor.body().statements().size() > 0) {
+			//add constructor if it is not empty
+			_type.addMember(_constructor);
+		}
 	}
 
 	public boolean visit(AnonymousClassDeclaration node) {
@@ -143,7 +146,6 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 	private void setUpConstructor() {
 		_constructor = new CSConstructor();
 		_constructor.visibility(CSVisibility.Public);
-		_type.addMember(_constructor);
 	}
 
 	private void setUpMethod() {

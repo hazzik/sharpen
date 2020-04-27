@@ -11,10 +11,6 @@ namespace lambdas
 
 		private sealed class _Callable_7 : java.util.concurrent.Callable<bool>
 		{
-			public _Callable_7()
-			{
-			}
-
 			public bool call()
 			{
 				return true;

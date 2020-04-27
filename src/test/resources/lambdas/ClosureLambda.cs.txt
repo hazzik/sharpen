@@ -12,17 +12,17 @@ namespace lambdas
 
 		private sealed class _Callable_8 : java.util.concurrent.Callable<bool>
 		{
-			public _Callable_8(bool y)
-			{
-				this.y = y;
-			}
-
 			public bool call()
 			{
 				return y;
 			}
 
 			private readonly bool y;
+
+			public _Callable_8(bool y)
+			{
+				this.y = y;
+			}
 		}
 
 		/// <exception cref="System.Exception"/>
