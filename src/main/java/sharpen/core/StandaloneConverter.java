@@ -42,7 +42,7 @@ public class StandaloneConverter extends SharpenConversion {
 	
 	public StandaloneConverter(Configuration configuration) {
 		super(configuration);
-		_parser = ASTParser.newParser(AST.JLS4);
+		_parser = ASTParser.newParser(AST.JLS8);
 		_parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		
 		@SuppressWarnings("unchecked")
