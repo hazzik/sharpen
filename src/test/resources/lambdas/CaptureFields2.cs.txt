@@ -1,0 +1,22 @@
+namespace lambdas
+{
+	public class CaptureFields2
+	{
+		private readonly System.Collections.Generic.IDictionary<string, string> partitions
+			 = new java.util.LinkedHashMap<string, string>();
+
+		protected internal virtual void onNewLimit(int newLimit)
+		{
+			partitions.forEach(new _BiConsumer_10());
+		}
+
+		private sealed class _BiConsumer_10 : java.util.function.BiConsumer<string, string
+			>
+		{
+			public void accept(string key, string value)
+			{
+				value.Equals(key);
+			}
+		}
+	}
+}

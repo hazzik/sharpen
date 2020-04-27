@@ -1,0 +1,12 @@
+package lambdas;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+public class CaptureFields2 {
+	private final Map<String, String> partitions = new LinkedHashMap<>();
+
+	protected void onNewLimit(int newLimit) {
+		partitions.forEach((key, value) -> value.equals(key));
+	}
+}

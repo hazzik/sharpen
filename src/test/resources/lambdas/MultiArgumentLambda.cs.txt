@@ -5,7 +5,7 @@ namespace lambdas
 		/// <exception cref="System.Exception"/>
 		public virtual void passLambda()
 		{
-			acceptingLambda(new _BiFunction_7(x, y));
+			acceptingLambda(new _BiFunction_7());
 		}
 
 		private sealed class _BiFunction_7 : java.util.function.BiFunction<int, int, int>
@@ -13,16 +13,6 @@ namespace lambdas
 			public int apply(int x, int y)
 			{
 				return x + y;
-			}
-
-			private readonly int x;
-
-			private readonly int y;
-
-			public _BiFunction_7(int x, int y)
-			{
-				this.x = x;
-				this.y = y;
 			}
 		}
 

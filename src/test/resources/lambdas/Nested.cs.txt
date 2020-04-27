@@ -4,7 +4,7 @@ namespace lambdas
 	{
 		public virtual void run()
 		{
-			java.util.function.Function<int, int> x = new _Function_7(this, y);
+			java.util.function.Function<int, int> x = new _Function_7(this);
 		}
 
 		private sealed class _Function_7 : java.util.function.Function<int, int>
@@ -13,30 +13,20 @@ namespace lambdas
 			{
 				return z;
 			}
-
-			private readonly int z;
-
-			public _Function_7(int z)
-			{
-				this.z = z;
-			}
 		}
 
 		private sealed class _Function_7 : java.util.function.Function<int, int>
 		{
 			public int apply(int y)
 			{
-				return this._enclosing.test(new _Function_7(z));
+				return this._enclosing.test(new _Function_7());
 			}
 
 			private readonly Nested _enclosing;
 
-			private readonly int y;
-
-			public _Function_7(Nested _enclosing, int y)
+			public _Function_7(Nested _enclosing)
 			{
 				this._enclosing = _enclosing;
-				this.y = y;
 			}
 		}
 

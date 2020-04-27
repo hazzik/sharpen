@@ -5,7 +5,7 @@ namespace lambdas
 		/// <exception cref="System.Exception"/>
 		public virtual void passLambda()
 		{
-			acceptingLambda(new _Function_7(z), false);
+			acceptingLambda(new _Function_7(), false);
 		}
 
 		private sealed class _Function_7 : java.util.function.Function<bool, bool>
@@ -13,13 +13,6 @@ namespace lambdas
 			public bool apply(bool z)
 			{
 				return z;
-			}
-
-			private readonly bool z;
-
-			public _Function_7(bool z)
-			{
-				this.z = z;
 			}
 		}
 

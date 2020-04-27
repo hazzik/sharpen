@@ -232,7 +232,8 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 				if (binding instanceof IVariableBinding) {
 					IVariableBinding variable = (IVariableBinding)binding;
 					if (!variable.isField()) {
-						return variable.getDeclaringMethod() != _currentMethodBinding;
+						final IMethodBinding declaringMethod = variable.getDeclaringMethod();
+						return declaringMethod != _currentMethodBinding && declaringMethod != _node.resolveMethodBinding();
 					}
 				}
 				return false;

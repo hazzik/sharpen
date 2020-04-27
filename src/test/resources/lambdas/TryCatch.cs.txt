@@ -4,7 +4,7 @@ namespace lambdas
 	{
 		public virtual void run()
 		{
-			java.util.stream.IntStream.range(0, 5).peek(new _IntConsumer_9(i, e));
+			java.util.stream.IntStream.range(0, 5).peek(new _IntConsumer_9());
 		}
 
 		private sealed class _IntConsumer_9 : java.util.function.IntConsumer
@@ -18,16 +18,6 @@ namespace lambdas
 				catch (System.Exception)
 				{
 				}
-			}
-
-			private readonly int i;
-
-			private readonly System.Exception e;
-
-			public _IntConsumer_9(int i, System.Exception e)
-			{
-				this.i = i;
-				this.e = e;
 			}
 		}
 	}

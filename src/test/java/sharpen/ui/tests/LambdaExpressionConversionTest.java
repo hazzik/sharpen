@@ -46,6 +46,11 @@ public class LambdaExpressionConversionTest extends AbstractConversionTestCase {
 		runResourceTestCase("VoidExpression");
 	}
 
+	@Test
+	public void testCaptureFields() throws Throwable {
+		runResourceTestCase("CaptureFields2");
+	}
+
 	@Override
 	protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
 		super.runResourceTestCase(resourcePath(resourceName));
