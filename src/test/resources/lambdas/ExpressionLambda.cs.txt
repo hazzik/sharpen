@@ -1,0 +1,30 @@
+namespace lambdas
+{
+	public class ExpressionLambda
+	{
+		/// <exception cref="System.Exception"/>
+		public virtual void passLambda()
+		{
+			java.util.concurrent.Callable<bool> x = new _Callable_7();
+			acceptingLamba(x);
+		}
+
+		private sealed class _Callable_7 : java.util.concurrent.Callable<bool>
+		{
+			public _Callable_7()
+			{
+			}
+
+			public bool call()
+			{
+				return true;
+			}
+		}
+
+		/// <exception cref="System.Exception"/>
+		public virtual bool acceptingLamba(java.util.concurrent.Callable<bool> l)
+		{
+			return l.call();
+		}
+	}
+}

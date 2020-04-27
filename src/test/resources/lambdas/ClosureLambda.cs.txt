@@ -1,0 +1,34 @@
+namespace lambdas
+{
+	public class ClosureLambda
+	{
+		/// <exception cref="System.Exception"/>
+		public virtual void passLambda()
+		{
+			bool y = false;
+			java.util.concurrent.Callable<bool> x = new _Callable_8(y);
+			acceptingLambda(x);
+		}
+
+		private sealed class _Callable_8 : java.util.concurrent.Callable<bool>
+		{
+			public _Callable_8(bool y)
+			{
+				this.y = y;
+			}
+
+			public bool call()
+			{
+				return y;
+			}
+
+			private readonly bool y;
+		}
+
+		/// <exception cref="System.Exception"/>
+		public virtual bool acceptingLambda(java.util.concurrent.Callable<bool> l)
+		{
+			return l.call();
+		}
+	}
+}

@@ -65,15 +65,15 @@ public class CSharpBuilder extends ASTVisitor {
 
 	private String _content;
 
-	private CSBlock _currentBlock;
+	CSBlock _currentBlock;
 
 	private CSExpression _currentExpression;
 
 	protected CSMethodBase _currentMethod;
 
-	protected BodyDeclaration _currentBodyDeclaration;
-	
-	private CSLabelStatement _currentContinueLabel;
+	BodyDeclaration _currentBodyDeclaration;
+
+	CSLabelStatement _currentContinueLabel;
 
 	private static final Pattern SUMMARY_CLOSURE_PATTERN = Pattern.compile("\\.(\\s|$)");
 
@@ -1611,6 +1611,13 @@ public class CSharpBuilder extends ASTVisitor {
 		return false;
 	}
 
+    public boolean visit(LambdaExpression node) {
+        CSLambdaAnonymousClassBuilder builder = new CSLambdaAnonymousClassBuilder(this, node);
+        _currentType.addMember(builder.type());
+        pushExpression(builder.createConstructorInvocation());
+        return false;
+	}
+
 	private void processIndexerDeclaration(MethodDeclaration node) {
 		processPropertyDeclaration(node, CSProperty.INDEXER);
 	}
@@ -1836,7 +1843,7 @@ public class CSharpBuilder extends ASTVisitor {
 		}
 	}
 
-	private void mapParameter(SingleVariableDeclaration parameter, CSParameterized method) {
+	protected void mapParameter(VariableDeclaration parameter, CSParameterized method) {
 		if (method instanceof CSMethod) {
 			IVariableBinding vb = parameter.resolveBinding();
 			ITypeBinding[] ta = vb.getType().getTypeArguments();
@@ -2119,7 +2126,7 @@ public class CSharpBuilder extends ASTVisitor {
 		return false;
 	}
 
-	private <T extends ASTNode> void visitBlock(CSBlock block, T node) {
+	protected <T extends ASTNode> void visitBlock(CSBlock block, T node) {
 		if (null == node) {
 			return;
 		}
@@ -3760,7 +3767,7 @@ public class CSharpBuilder extends ASTVisitor {
 		return found;
 	}
 
-	private CSVariableDeclaration createParameter(SingleVariableDeclaration declaration) {
+	private CSVariableDeclaration createParameter(VariableDeclaration declaration) {
 		return createVariableDeclaration(declaration.resolveBinding(), null);
 	}
 

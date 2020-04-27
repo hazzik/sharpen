@@ -1,0 +1,15 @@
+package lambdas;
+
+import java.util.concurrent.Callable;
+
+public class ClosureLambda {
+	public void passLambda() throws Exception {
+		Boolean y = false;
+		Callable<Boolean> x = () -> { return y; };
+		acceptingLambda(x);
+	}
+
+	public Boolean acceptingLambda(Callable<Boolean> l) throws Exception {
+		return l.call();
+	}
+}

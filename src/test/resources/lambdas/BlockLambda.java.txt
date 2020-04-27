@@ -1,0 +1,14 @@
+package lambdas;
+
+import java.util.concurrent.Callable;
+
+public class BlockLambda {
+	public void passLambda() throws Exception {
+		Callable<Boolean> x = () -> { return true; };
+		acceptingLambda(x);
+	}
+
+	public Boolean acceptingLambda(Callable<Boolean> l) throws Exception {
+		return l.call();
+	}
+}

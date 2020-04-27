@@ -1,0 +1,13 @@
+package lambdas;
+
+import java.util.function.Function;
+
+public class GenericLambda {
+	public void passLambda() throws Exception {
+		acceptingLambda(z -> z, false);
+	}
+
+	public <T> T acceptingLambda(Function<T, T> f, T x) throws Exception {
+		return f.apply(x);
+	}
+}
