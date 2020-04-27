@@ -114,6 +114,12 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 		return _node.resolveTypeBinding();
 	}
 
+	@Override
+	protected CSExpression createEnclosingThisReference(ITypeBinding enclosingClassBinding, boolean ignoreSuperclass) {
+		//We do not have superclass
+		return super.createEnclosingThisReference(enclosingClassBinding, true);
+	}
+
 	private String anonymousInnerClassName() {
 		return "_" + simpleName(anonymousBaseTypeName()) + "_" + lineNumber(_node);
 	}

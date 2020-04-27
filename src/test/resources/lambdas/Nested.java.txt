@@ -1,0 +1,13 @@
+package lambdas;
+
+import java.util.function.Function;
+
+public class Nested {
+	public void run() {
+		Function<Integer, Integer> x = y -> test(z->z);
+	}
+
+	public Integer test (Function<Integer, Integer> another) {
+		return another.apply(1);
+	}
+}

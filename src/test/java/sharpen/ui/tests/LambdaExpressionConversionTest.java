@@ -36,6 +36,11 @@ public class LambdaExpressionConversionTest extends AbstractConversionTestCase {
 		runResourceTestCase("TryCatch");
 	}
 
+	@Test
+	public void testNested() throws Throwable {
+		runResourceTestCase("Nested");
+	}
+
 	@Override
 	protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
 		super.runResourceTestCase(resourcePath(resourceName));
