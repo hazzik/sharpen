@@ -19,7 +19,7 @@ public abstract class ConversionBatch {
 	private boolean _continueOnError;
 
 	public ConversionBatch() {
-		_parser = ASTParser.newParser(AST.JLS4);
+		_parser = ASTParser.newParser(AST.JLS8);
 		_parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		
 		@SuppressWarnings("unchecked")
