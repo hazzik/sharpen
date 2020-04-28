@@ -722,7 +722,8 @@ public class CSharpBuilder extends ASTVisitor {
 	private CSTypeDeclaration typeDeclarationFor(AbstractTypeDeclaration node, boolean auxillary) {
 		final String typeName = typeName(node);
 		if (node instanceof TypeDeclaration && ((TypeDeclaration)node).isInterface()) {
-			boolean valid = isValidCSInterface(node.resolveBinding());
+			ITypeBinding interfaceType = node.resolveBinding();
+			boolean valid = isValidCSInterface(interfaceType) && !hasDefaultOrStaticMethods(node.resolveBinding());
 			if (valid && auxillary) {
 				return null;
 			} else if (valid || (!auxillary && _configuration.separateInterfaceConstants())) {
@@ -3881,10 +3882,14 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	CSMethodModifier mapMethodModifier(MethodDeclaration method) {
+		int modifiers = method.getModifiers();
 		if (_currentType.isInterface() || method.resolveBinding().getDeclaringClass().isInterface()) {
+			if (Modifier.isDefault(modifiers))
+				return CSMethodModifier.Virtual;
+			if (Modifier.isStatic(modifiers))
+				return CSMethodModifier.Static;
 			return CSMethodModifier.Abstract;
 		}
-		int modifiers = method.getModifiers();
 		if (Modifier.isStatic(modifiers)) {
 			return CSMethodModifier.Static;
 		}
@@ -3950,6 +3955,17 @@ public class CSharpBuilder extends ASTVisitor {
 				return false;
 		}
 		return true;
+	}
+
+	private boolean hasDefaultOrStaticMethods(ITypeBinding type) {
+		for (IMethodBinding method : type.getDeclaredMethods()) {
+			int modifiers = method.getModifiers();
+			if (Modifier.isDefault(modifiers) || Modifier.isStatic(modifiers)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	CSClassModifier mapClassModifier(int modifiers) {
