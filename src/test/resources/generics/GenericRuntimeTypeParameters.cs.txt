@@ -13,7 +13,7 @@ namespace Generics
 		{
 			System.Collections.Generic.IEnumerable<string> items = Query<string>();
 			System.Type stringClass = typeof(string);
-			System.Collections.IEnumerable items2 = Query(stringClass);
+			System.Collections.IEnumerable items2 = Query<object>(stringClass);
 		}
 
 		internal static void Print(string s)

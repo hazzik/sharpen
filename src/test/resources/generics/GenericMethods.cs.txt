@@ -2,6 +2,14 @@ namespace generics
 {
 	public class GenericMethods
 	{
+		private System.Collections.Generic.IList<int> myList1 = generics.GenericMethods.newList
+			<int>();
+
+		private System.Collections.Generic.IList<int> myList2 = generics.GenericMethods.newList
+			<int>();
+
+		private System.Collections.Generic.IList<int> myList3 = newList<int>();
+
 		public virtual T[] toArray<T>(T[] a)
 		{
 			return a;

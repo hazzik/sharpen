@@ -228,7 +228,7 @@ public class CSharpBuilder extends ASTVisitor {
 
 		try {
 			my(NameScope.class).enterTypeDeclaration(node);
-			
+
 			_ignoreExtends.using(ignoreExtends(node), new Runnable() {
 				public void run() {
 					processAnnotationTypeDeclaration(node);
@@ -1604,7 +1604,7 @@ public class CSharpBuilder extends ASTVisitor {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean visit(AnnotationTypeMemberDeclaration node) {
 		// TODO: FIXME!
@@ -2185,7 +2185,7 @@ public class CSharpBuilder extends ASTVisitor {
 		pushExpression(expr);
 		return false;
 	}
-	
+
 	public boolean visit(VariableDeclarationStatement node) {
 		for (Object f : node.fragments()) {
 			VariableDeclarationFragment variable = (VariableDeclarationFragment) f;
@@ -2206,7 +2206,7 @@ public class CSharpBuilder extends ASTVisitor {
 		return new CSVariableDeclaration(formatVariableName(binding), mappedTypeReference(binding.getType()),
 		        initializer);
 	}
-	
+
 	private String formatVariableName(IVariableBinding binding) {
 		String name = binding.getName();
 		if (_blockVariables.size() > 0) {
@@ -3251,8 +3251,8 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private void mapTypeArguments(CSMethodInvocationExpression mie, MethodInvocation node) {
-	    for (Object o : node.typeArguments()) {
-			mie.addTypeArgument(mappedTypeReference((Type)o));
+	    for (Object o : node.resolveMethodBinding().getTypeArguments()) {
+			mie.addTypeArgument(mappedTypeReference((ITypeBinding)o));
 		}
     }
 
@@ -3293,7 +3293,7 @@ public class CSharpBuilder extends ASTVisitor {
 			final Expression arg = (Expression) arguments.get(i);
 			if (i < originalTypes.length && isGenericRuntimeParameterIdiom(originalMethod, originalTypes[i])
 			        && isClassLiteral(arg)) {
-				mie.addTypeArgument(genericRuntimeTypeIdiomType(actualTypes[i]));
+				//mie.addTypeArgument(genericRuntimeTypeIdiomType(actualTypes[i]));
 			} else {
 				addArgument(mie, arg, i < actualTypes.length ? actualTypes[i] : null);
 			}

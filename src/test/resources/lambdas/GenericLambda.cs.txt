@@ -5,7 +5,7 @@ namespace lambdas
 		/// <exception cref="System.Exception"/>
 		public virtual void passLambda()
 		{
-			acceptingLambda(new _Function_7(), false);
+			acceptingLambda<bool>(new _Function_7(), false);
 		}
 
 		private sealed class _Function_7 : java.util.function.Function<bool, bool>
