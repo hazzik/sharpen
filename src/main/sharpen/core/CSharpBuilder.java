@@ -3184,8 +3184,8 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private void mapTypeArguments(CSMethodInvocationExpression mie, MethodInvocation node) {
-	    for (Object o : node.typeArguments()) {
-			mie.addTypeArgument(mappedTypeReference((Type)o));
+	    for (Object o : node.resolveMethodBinding().getTypeArguments()) {
+			mie.addTypeArgument(mappedTypeReference((ITypeBinding)o));
 		}
     }
 
@@ -3226,7 +3226,7 @@ public class CSharpBuilder extends ASTVisitor {
 			final Expression arg = (Expression) arguments.get(i);
 			if (i < originalTypes.length && isGenericRuntimeParameterIdiom(originalMethod, originalTypes[i])
 			        && isClassLiteral(arg)) {
-				mie.addTypeArgument(genericRuntimeTypeIdiomType(actualTypes[i]));
+				//mie.addTypeArgument(genericRuntimeTypeIdiomType(actualTypes[i]));
 			} else {
 				addArgument(mie, arg, i < actualTypes.length ? actualTypes[i] : null);
 			}

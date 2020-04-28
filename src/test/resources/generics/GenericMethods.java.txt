@@ -3,6 +3,10 @@ package generics;
 import java.util.*;
 
 public class GenericMethods {
+    private List<Integer> myList1 = GenericMethods.<Integer>newList();
+    private List<Integer> myList2 = GenericMethods.newList();
+    private List<Integer> myList3 = newList();
+
 	public <T> T[] toArray(T[] a) {
 		return a;
 	}
