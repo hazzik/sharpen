@@ -1,0 +1,13 @@
+namespace interfaces
+{
+	public abstract class StaticMethods
+	{
+		public static void aMethod()
+		{
+		}
+	}
+
+	public static class StaticMethodsConstants
+	{
+	}
+}

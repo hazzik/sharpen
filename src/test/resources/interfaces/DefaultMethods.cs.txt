@@ -1,0 +1,13 @@
+namespace interfaces
+{
+	public abstract class DefaultMethods
+	{
+		public virtual void aMethod()
+		{
+		}
+	}
+
+	public static class DefaultMethodsConstants
+	{
+	}
+}
