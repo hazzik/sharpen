@@ -1,0 +1,38 @@
+namespace lambdas
+{
+	public class Nested
+	{
+		public virtual void run()
+		{
+			java.util.function.Function<int, int> x = new _Function_7(this);
+		}
+
+		private sealed class _Function_7 : java.util.function.Function<int, int>
+		{
+			public int apply(int z)
+			{
+				return z;
+			}
+		}
+
+		private sealed class _Function_7 : java.util.function.Function<int, int>
+		{
+			public int apply(int y)
+			{
+				return this._enclosing.test(new _Function_7());
+			}
+
+			private readonly Nested _enclosing;
+
+			public _Function_7(Nested _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		public virtual int test(java.util.function.Function<int, int> another)
+		{
+			return another.apply(1);
+		}
+	}
+}

@@ -1,0 +1,25 @@
+namespace lambdas
+{
+	public class GenericLambda
+	{
+		/// <exception cref="System.Exception"/>
+		public virtual void passLambda()
+		{
+			acceptingLambda(new _Function_7(), false);
+		}
+
+		private sealed class _Function_7 : java.util.function.Function<bool, bool>
+		{
+			public bool apply(bool z)
+			{
+				return z;
+			}
+		}
+
+		/// <exception cref="System.Exception"/>
+		public virtual T acceptingLambda<T>(java.util.function.Function<T, T> f, T x)
+		{
+			return f.apply(x);
+		}
+	}
+}

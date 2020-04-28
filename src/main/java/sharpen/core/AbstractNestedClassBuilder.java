@@ -86,7 +86,7 @@ public abstract class AbstractNestedClassBuilder extends CSharpBuilder {
 		return createEnclosingThisReference(enclosingClassBinding, false);
 	}
 
-	private CSExpression createEnclosingThisReference(
+	protected CSExpression createEnclosingThisReference(
 			ITypeBinding enclosingClassBinding, boolean ignoreSuperclass) {
 		CSExpression enclosing = new CSThisExpression();			
 		ITypeBinding binding = nestedTypeBinding();
