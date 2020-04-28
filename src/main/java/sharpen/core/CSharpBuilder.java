@@ -1483,10 +1483,10 @@ public class CSharpBuilder extends ASTVisitor {
 
 	private CSField mapFieldDeclarationFragment(FieldDeclaration node, VariableDeclarationFragment fragment,
 	        CSTypeReferenceExpression fieldType, CSVisibility fieldVisibility) {
-		if (fragment.getExtraDimensions() > 0) {
-			fieldType = new CSArrayTypeReference(fieldType, fragment.getExtraDimensions());
-		}
-		CSField field = new CSField(fieldName(fragment), fieldType, fieldVisibility, mapFieldInitializer(fragment));
+		CSField field = new CSField(fieldName(fragment),
+				arrayElementType(fieldType, fragment.getExtraDimensions()),
+				fieldVisibility,
+				mapFieldInitializer(fragment));
 		if (isConstField(node, fragment)) {
 			field.addModifier(CSFieldModifier.Const);
 		} else {
@@ -2525,27 +2525,40 @@ public class CSharpBuilder extends ASTVisitor {
 	 * string[2], new string[2], new string[2] } }"
 	 */
 	private CSArrayCreationExpression unfoldMultiArrayCreation(ArrayCreation node) {
-		return unfoldMultiArray((ArrayType) node.getType().getComponentType(), node.dimensions(), 0);
+		final ArrayType arrayType = node.getType();
+		final CSTypeReferenceExpression elementType = mappedTypeReference(arrayType.getElementType());
+		return unfoldMultiArray(elementType, node.dimensions(), 0, arrayType.getDimensions() - 1);
 	}
 
-	private CSArrayCreationExpression unfoldMultiArray(ArrayType type, List dimensions, int dimensionIndex) {
-		final CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedTypeReference(type));
+	private CSArrayCreationExpression unfoldMultiArray(CSTypeReferenceExpression elementType, List dimensions, int dimensionIndex, int elementDimensions) {
+		final CSArrayCreationExpression expression = new CSArrayCreationExpression(
+				arrayElementType(elementType, elementDimensions)
+		);
 		expression.initializer(new CSArrayInitializerExpression());
 		int length = resolveIntValue(dimensions.get(dimensionIndex));
 		if (dimensionIndex < lastIndex(dimensions) - 1) {
 			for (int i = 0; i < length; ++i) {
 				expression.initializer().addExpression(
-				        unfoldMultiArray((ArrayType) type.getComponentType(), dimensions, dimensionIndex + 1));
+						unfoldMultiArray(elementType, dimensions, dimensionIndex + 1, elementDimensions - 1));
 			}
 		} else {
 			Expression innerLength = (Expression) dimensions.get(dimensionIndex + 1);
-			CSTypeReferenceExpression innerType = mappedTypeReference(type.getComponentType());
 			for (int i = 0; i < length; ++i) {
 				expression.initializer().addExpression(
-				        new CSArrayCreationExpression(innerType, mapExpression(innerLength)));
+				        new CSArrayCreationExpression(
+								arrayElementType(elementType, elementDimensions - 1),
+								mapExpression(innerLength)));
 			}
 		}
 		return expression;
+	}
+
+	private CSTypeReferenceExpression arrayElementType(CSTypeReferenceExpression elementType, int elementDimensions) {
+		if (elementDimensions > 0) {
+			return new CSArrayTypeReference(elementType, elementDimensions);
+		}
+
+		return elementType;
 	}
 
 	private int lastIndex(List<?> dimensions) {
@@ -2557,8 +2570,10 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private CSArrayCreationExpression mapSingleArrayCreation(ArrayCreation node) {
-		CSArrayCreationExpression expression = new CSArrayCreationExpression(mappedTypeReference(componentType(node
-		        .getType())));
+		node.getType().getDimensions();
+		ITypeBinding type = componentType(node.getType());
+		CSTypeReferenceExpression elementType = arrayElementType(mappedTypeReference(type), node.getType().getDimensions() - 1);
+		CSArrayCreationExpression expression = new CSArrayCreationExpression(elementType);
 		if (!node.dimensions().isEmpty()) {
 			expression.length(mapExpression((Expression) node.dimensions().get(0)));
 		}
@@ -2598,7 +2613,7 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	public ITypeBinding componentType(ArrayType type) {
-		return type.getComponentType().resolveBinding();
+		return type.getElementType().resolveBinding();
 	}
 
 	@Override
@@ -4079,8 +4094,7 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	private CSTypeReferenceExpression mappedArrayTypeReference(ITypeBinding type) {
-		return new CSArrayTypeReference(mappedTypeReference(type.getElementType()), type.getDimensions());
-
+		return arrayElementType(mappedTypeReference(type.getElementType()), type.getDimensions());
 	}
 
 	protected final String mappedTypeName(ITypeBinding type) {
