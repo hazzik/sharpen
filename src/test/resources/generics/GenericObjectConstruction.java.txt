@@ -4,5 +4,11 @@ class Entry<K, V> {
 }
 
 public class GenericObjectConstruction {
-	private Entry<String, Integer> _default = new Entry<String, Integer>();
+	private Entry<String, Integer> _default1 = new Entry<String, Integer>();
+	private Entry<String, Integer> _default2 = new Entry<>();
+	private Entry<String, Integer> _default3 = new Entry();
+
+	public static Entry<String, Integer> newEntity() {
+		return new Entry();
+	}
 }
