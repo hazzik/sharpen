@@ -2450,7 +2450,14 @@ public class CSharpBuilder extends ASTVisitor {
 	}
 
 	public boolean visit(ReturnStatement node) {
-		addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
+		if (_currentBodyDeclaration instanceof MethodDeclaration) {
+			MethodDeclaration methodDeclaration = (MethodDeclaration) _currentBodyDeclaration;
+			ITypeBinding saved = pushExpectedType(methodDeclaration.resolveBinding().getReturnType());
+			addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
+			popExpectedType(saved);
+		} else {
+			addStatement(new CSReturnStatement(node.getStartPosition(), mapExpression(node.getExpression())));
+		}
 		return false;
 	}
 
@@ -3002,7 +3009,11 @@ public class CSharpBuilder extends ASTVisitor {
 	private CSMethodInvocationExpression mapConstructorInvocation(ClassInstanceCreation node) {
 		Configuration.MemberMapping mappedConstructor = effectiveMappingFor(node.resolveConstructorBinding());
 		if (null == mappedConstructor) {
-			return new CSConstructorInvocationExpression(mappedTypeReference(node.resolveTypeBinding()));
+			ITypeBinding type = node.resolveTypeBinding();
+			if (type.isRawType() && matchesCurrentExpectedTypeErasure(type)) {
+				return new CSConstructorInvocationExpression(mappedTypeReference(_currentExpectedType));
+			}
+			return new CSConstructorInvocationExpression(mappedTypeReference(type));
 		}
 		final String mappedName = mappedConstructor.name;
 		if (mappedName.length() == 0) {
@@ -3015,6 +3026,10 @@ public class CSharpBuilder extends ASTVisitor {
 			}
 		}
 		return new CSMethodInvocationExpression(new CSReferenceExpression(methodName(mappedName)));
+	}
+
+	private boolean matchesCurrentExpectedTypeErasure(ITypeBinding type) {
+		return _currentExpectedType != null && _currentExpectedType.getErasure() == type.getErasure();
 	}
 
 	private boolean optimizeSystemConvert(String mappedConstructor, ClassInstanceCreation node) {
