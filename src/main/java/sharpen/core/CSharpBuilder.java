@@ -970,17 +970,18 @@ public class CSharpBuilder extends ASTVisitor {
 			return;
 
 		MethodDeclaration method = (MethodDeclaration) bodyDecl;
-		mapThrownExceptions(method.thrownExceptions(), member);
+		mapThrownExceptions(method.thrownExceptionTypes(), member);
 	}
 
 	private void mapThrownExceptions(List thrownExceptions, CSMember member) {
 		for (Object exception : thrownExceptions) {
-			mapThrownException((Name) exception, member);
+			Type exceptionType = (Type) exception;
+			mapThrownException(exceptionType, member);
 		}
 	}
 
-	private void mapThrownException(Name exception, CSMember member) {
-		final String typeName = mappedTypeName(exception.resolveTypeBinding());
+	private void mapThrownException(Type exception, CSMember member) {
+		final String typeName = mappedTypeName(exception.resolveBinding());
 		if (containsExceptionTagWithCRef(member, typeName))
 			return;
 
