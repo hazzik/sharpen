@@ -20,9 +20,9 @@ Sharpen was originally created by db40 [svn source here](https://source.db4o.com
 ### Building and testing sharpen itself
 
 1. Clone this repository
-2. Install Java 7 and maven. Java 6 and 8 and later aren’t supported.
+2. Install Java 8 and maven.
 3. Run ‘mvn clean test’ to test
-4. Run ‘mvn install ’ to generate .jar files in /sharpen.core/target
+4. Run ‘mvn install’ to generate .jar files in /sharpen.core/target
 
 ### Running sharpen
 
