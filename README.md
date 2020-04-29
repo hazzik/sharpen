@@ -1,12 +1,6 @@
 # Sharpen - Automated Java->C# coversion
 
-[imazen/sharpen](https://github.com/imazen/sharpen) [![master](https://img.shields.io/travis/imazen/sharpen/master.svg?label=imazen%20master)](https://travis-ci.org/imazen/sharpen/builds)[![imazen master - AppVeyor](https://ci.appveyor.com/api/projects/status/qxrbmyx70iuoev0x/branch/master?svg=true&passingText=imazen%20master%20-%20passing&failingText=imazen%20master%20-%20failed)](https://ci.appveyor.com/project/imazen/sharpen/branch/master) [![develop](https://img.shields.io/travis/imazen/sharpen/develop.svg?label=imazen%20develop)](https://travis-ci.org/imazen/sharpen/builds)
-[![imazen develop - AppVeyor](https://ci.appveyor.com/api/projects/status/qxrbmyx70iuoev0x/branch/develop?svg=true&passingText=imazen%20develop%20-%20passing&failingText=imazen%20develop%20-%20failed)](https://ci.appveyor.com/project/imazen/sharpen/branch/develop)
-
-[mono/sharpen](https://github.com/mono/sharpen) [![master](https://img.shields.io/travis/mono/sharpen/master.svg?label=mono%20master)](https://travis-ci.org/mono/sharpen/builds)[![mono master - AppVeyor (permissions issue)](https://ci.appveyor.com/api/projects/status/[projectid]/branch/master?svg=true&passingText=slluis%20master%20-%20passing&failingText=slluis%20master%20-%20failed)](https://ci.appveyor.com/project/imazen/imazen/branch/master) [![develop](https://img.shields.io/travis/mono/sharpen/develop.svg?label=mono%20develop)](https://travis-ci.org/mono/sharpen/builds)
-[![mono develop - AppVeyor (permissions issue)](https://ci.appveyor.com/api/projects/status/[projectid]/branch/develop?svg=true&passingText=mono%20develop%20-%20passing&failingText=mono%20develop%20-%20failed)](https://ci.appveyor.com/project/mono/sharpen/branch/develop)
-
-
+[![develop](https://img.shields.io/travis/hazzik/sharpen-java8/develop.svg?label=develop)](https://travis-ci.org/hazzik/sharpen-java8/builds)
 
 Sharpen is a library and command-line tool for automating Java to C# code conversion. You can provide configuration classes to control a wide range of class and functionality mapping.
 
