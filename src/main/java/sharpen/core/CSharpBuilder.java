@@ -3081,7 +3081,7 @@ public class CSharpBuilder extends ASTVisitor {
 	public boolean visit(MethodInvocation node) {
 		
 		IMethodBinding binding = originalMethodBinding(node.resolveMethodBinding());
-		Configuration.MemberMapping mapping = mappingForInvocation(node, binding);
+		Configuration.MemberMapping mapping = mappingForInvocation(binding);
 
 		if (null != mapping) {
 			processMappedMethodInvocation(node, binding, mapping);
@@ -3091,14 +3091,30 @@ public class CSharpBuilder extends ASTVisitor {
 		
 		return false;
 	}
-	
+
+	@Override
+	public boolean visit(CreationReference node) {
+		CSLambdaAnonymousClassBuilder builder = new CSLambdaAnonymousClassBuilder(this, node);
+		_currentType.addMember(builder.type());
+		pushExpression(builder.createConstructorInvocation());
+		return false;
+	}
+
+	@Override
+	public boolean visit(ExpressionMethodReference node) {
+		CSLambdaAnonymousClassBuilder builder = new CSLambdaAnonymousClassBuilder(this, node);
+		_currentType.addMember(builder.type());
+		pushExpression(builder.createConstructorInvocation());
+		return false;
+	}
+
 	public boolean visit(SuperMethodInvocation node) {
 		if (null != node.getQualifier()) {
 			notImplemented(node);
 		}
 
 		IMethodBinding binding = originalMethodBinding(node.resolveMethodBinding());
-		Configuration.MemberMapping mapping = mappingForInvocation(node, binding);
+		Configuration.MemberMapping mapping = mappingForInvocation(binding);
 		CSExpression target = new CSMemberReferenceExpression(new CSBaseExpression(), mappedMethodName(binding));
 
 		if (mapping != null && mapping.kind != MemberKind.Method) {
@@ -3112,7 +3128,7 @@ public class CSharpBuilder extends ASTVisitor {
 		return false;
 	}
 	
-	private Configuration.MemberMapping mappingForInvocation(ASTNode node, IMethodBinding binding) {
+	protected Configuration.MemberMapping mappingForInvocation(IMethodBinding binding) {
 		Configuration.MemberMapping mapping = effectiveMappingFor(binding);
 
 		if (null == mapping) {
@@ -3243,11 +3259,19 @@ public class CSharpBuilder extends ASTVisitor {
     }
 	
 	private String resolveTargetMethodName(CSExpression targetExpression, MethodInvocation node) {
-		final IMethodBinding method = staticImportMethodBinding(node.getName(), _ast.imports());
-		if(method != null && targetExpression == null){
-			return mappedTypeName(method.getDeclaringClass()) + "." + mappedMethodName(node.resolveMethodBinding());
+		return resolveTargetMethodName(targetExpression, node.getName(), node.resolveMethodBinding());
+	}
+
+	private String resolveTargetMethodName(CSExpression targetExpression, ExpressionMethodReference node) {
+		return resolveTargetMethodName(targetExpression, node.getName(), node.resolveMethodBinding());
+	}
+
+	private String resolveTargetMethodName(CSExpression targetExpression, SimpleName name, IMethodBinding binding) {
+		final IMethodBinding method = staticImportMethodBinding(name, _ast.imports());
+		if (method != null && targetExpression == null) {
+			return mappedTypeName(method.getDeclaringClass()) + "." + mappedMethodName(binding);
 		}
-		return mappedMethodName(node.resolveMethodBinding());
+		return mappedMethodName(binding);
 	}
 
 	private void mapTypeArguments(CSMethodInvocationExpression mie, MethodInvocation node) {
@@ -3454,7 +3478,7 @@ public class CSharpBuilder extends ASTVisitor {
 	        Configuration.MemberMapping mapping) {
 
 		if (mapping.kind == MemberKind.Indexer) {
-			processIndexerInvocation(node, binding, mapping);
+			processIndexerInvocation(node);
 			return;
 		}
 
@@ -3519,34 +3543,32 @@ public class CSharpBuilder extends ASTVisitor {
 		pushExpression(mie);
 	}
 
-	private void processIndexerInvocation(MethodInvocation node, IMethodBinding binding, MemberMapping mapping) {
-		if (node.arguments().size() == 1) {
-			processIndexerGetter(node);
+	private void processIndexerInvocation(MethodInvocation node) {
+		pushExpression(createIndexerInvocation(mapIndexerTarget(node), mapExpressions(node.arguments())));
+	}
+
+	protected CSExpression createIndexerInvocation(CSExpression target, List<CSExpression> arguments) {
+		if (arguments.size() == 1) {
+			return createIndexedExpression(target, arguments.get(0));
 		} else {
-			processIndexerSetter(node);
+			return createIndexerSetter(target, arguments);
 		}
 	}
 
-	private void processIndexerSetter(MethodInvocation node) {
+	protected CSExpression createIndexerSetter(CSExpression target, List<CSExpression> args) {
 		// target(arg0 ... argN) => target[arg0... argN-1] = argN;
-		
-		final CSIndexedExpression indexer = new CSIndexedExpression(mapIndexerTarget(node));
-		final List arguments = node.arguments();
-		final Expression lastArgument = (Expression)arguments.get(arguments.size() - 1);
-		for (int i=0; i<arguments.size()-1; ++i) {
-			indexer.addIndex(mapExpression((Expression) arguments.get(i)));
-		}
-		pushExpression(CSharpCode.newAssignment(indexer, mapExpression(lastArgument)));
-		
-    }
 
-	private void processIndexerGetter(MethodInvocation node) {
-	    final Expression singleArgument = (Expression) node.arguments().get(0);
-	    pushExpression(
-	    		new CSIndexedExpression(
-	    				mapIndexerTarget(node),
-	    				mapExpression(singleArgument)));
-    }
+		final CSIndexedExpression indexer = new CSIndexedExpression(target);
+		final CSExpression lastArgument = args.get(args.size() - 1);
+		for (int i=0; i<args.size()-1; ++i) {
+			indexer.addIndex(args.get(i));
+		}
+		return CSharpCode.newAssignment(indexer, (lastArgument));
+	}
+
+	private CSIndexedExpression createIndexedExpression(CSExpression target, CSExpression argument) {
+		return new CSIndexedExpression(target, argument);
+	}
 
 	private CSExpression mapIndexerTarget(MethodInvocation node) {
 		if (node.getExpression() == null) {
@@ -4238,11 +4260,11 @@ public class CSharpBuilder extends ASTVisitor {
 		return mapping.kind == MemberKind.Property;
 	}
 
-	private MemberMapping effectiveMappingFor(IMethodBinding binding) {
+	MemberMapping effectiveMappingFor(IMethodBinding binding) {
 		return my(Mappings.class).effectiveMappingFor(binding);
 	}
 
-	private String methodName(String name) {
+	protected String methodName(String name) {
 		return namingStrategy().methodName(name);
 	}
 
