@@ -1,0 +1,17 @@
+package lambdas;
+
+import java.util.function.Function;
+
+public class MethodReference {
+
+	protected void maps() {
+		map(String::new);
+		map(String::length);
+		map(MethodReference::x1);
+		map(this::x2);
+	}
+
+	public static Integer x1(String a){ return 0; }
+	public Integer x2(String a){ return 0; }
+	<R> void map(Function<String, R> mapper) { }
+}

@@ -1,0 +1,66 @@
+namespace lambdas
+{
+	public class MethodReference
+	{
+		protected internal virtual void maps()
+		{
+			map<string>(new _Function_8());
+			map<int>(new _Function_9());
+			map<int>(new _Function_10());
+			map<int>(new _Function_11(this));
+		}
+
+		private sealed class _Function_8 : java.util.function.Function<string, string>
+		{
+			public string apply(string _a0)
+			{
+				return new string(_a0);
+			}
+		}
+
+		private sealed class _Function_9 : java.util.function.Function<string, int>
+		{
+			public int apply(string _a0)
+			{
+				return _a0.Length;
+			}
+		}
+
+		private sealed class _Function_10 : java.util.function.Function<string, int>
+		{
+			public int apply(string _a0)
+			{
+				return lambdas.MethodReference.x1(_a0);
+			}
+		}
+
+		private sealed class _Function_11 : java.util.function.Function<string, int>
+		{
+			public int apply(string _a0)
+			{
+				return this._enclosing.x2(_a0);
+			}
+
+			private readonly MethodReference _enclosing;
+
+			public _Function_11(MethodReference _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		public static int x1(string a)
+		{
+			return 0;
+		}
+
+		public virtual int x2(string a)
+		{
+			return 0;
+		}
+
+		internal virtual void map<R>(java.util.function.Function<string, R> mapper)
+		{
+		}
+	}
+}

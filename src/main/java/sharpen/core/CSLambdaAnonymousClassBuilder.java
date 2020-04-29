@@ -3,12 +3,14 @@ package sharpen.core;
 import org.eclipse.jdt.core.dom.*;
 import sharpen.core.csharp.ast.*;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 
-	private LambdaExpression _node;
+	private Expression _node;
 
 	private CSClass _type;
 
@@ -16,7 +18,7 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 
 	private Set<IVariableBinding> _capturedVariables = new LinkedHashSet<IVariableBinding>();
 
-	public CSLambdaAnonymousClassBuilder(CSharpBuilder builder, LambdaExpression node) {
+	public CSLambdaAnonymousClassBuilder(CSharpBuilder builder, Expression node) {
 		super(builder);
 		_node = node;
 		run();
@@ -155,30 +157,109 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 	}
 
 	private void setUpMethod() {
-		final IMethodBinding methodBinding = _node.resolveMethodBinding();
-		CSMethod method = new CSMethod(mappedMethodName(methodBinding));
+		IMethodBinding interfaceMethod = _node.resolveTypeBinding().getFunctionalInterfaceMethod();
+
+		CSMethod method = new CSMethod(mappedMethodName(interfaceMethod));
 		method.visibility(CSVisibility.Public);
-		method.returnType(mappedTypeReference(methodBinding.getReturnType()));
-		for (Object p : _node.parameters()) {
+		method.returnType(mappedTypeReference(interfaceMethod.getReturnType()));
+
+		if (_node instanceof LambdaExpression) {
+			processLambdaExpression(interfaceMethod, method);
+		} else if (_node instanceof MethodReference) {
+			List<CSExpression> parameters = new ArrayList<CSExpression>();
+			ITypeBinding[] parameterTypes = interfaceMethod.getParameterTypes();
+			for (int i = 0; i < parameterTypes.length; i++) {
+				ITypeBinding parameterType = parameterTypes[i];
+				String parameterName = "_a" + i;
+				parameters.add(new CSReferenceExpression(parameterName));
+				method.addParameter(parameterName, mappedTypeReference(parameterType));
+			}
+
+			CSExpression expression = createMethodInvocationFromReference(parameters);
+
+			addExpressionStatement(interfaceMethod, method, expression);
+		}
+		_type.addMember(method);
+	}
+
+	private CSExpression createMethodInvocationFromReference(List<CSExpression> arguments) {
+		if (_node instanceof CreationReference) {
+			CreationReference node = (CreationReference) _node;
+			CSConstructorInvocationExpression expression = new CSConstructorInvocationExpression(mappedTypeReference(node.getType()));
+
+			for (CSExpression parameter : arguments) {
+				expression.addArgument(parameter);
+			}
+
+			return expression;
+		}
+
+		if (_node instanceof ExpressionMethodReference) {
+			ExpressionMethodReference node = (ExpressionMethodReference) _node;
+
+			return createMethodReferenceExpression(node, arguments);
+		}
+
+		return null;
+	}
+
+	private CSExpression createMethodReferenceExpression(ExpressionMethodReference node, List<CSExpression> arguments) {
+		IMethodBinding binding = node.resolveMethodBinding();
+
+		CSExpression methodTarget;
+		if (Modifier.isStatic(binding.getModifiers())) {
+			methodTarget = createEnclosingTargetReferences(node.getName());
+		} else if (node.getExpression() instanceof ThisExpression) {
+			requireEnclosingReference();
+			methodTarget = createEnclosingTargetReferences(node.getName());
+		} else {
+			methodTarget = arguments.remove(0);
+		}
+
+		Configuration.MemberMapping mapping = mappingForInvocation(binding);
+
+		if (mapping != null && mapping.kind == MemberKind.Indexer) {
+			return createIndexerInvocation(methodTarget, arguments);
+		}
+
+		CSMemberReferenceExpression referenceExpression = new CSMemberReferenceExpression(methodTarget, mappedMethodName(binding));
+
+		if (mapping == null || mapping.kind == MemberKind.Method) {
+			CSMethodInvocationExpression invocationExpression = new CSMethodInvocationExpression(referenceExpression);
+			for (CSExpression argument : arguments) {
+				invocationExpression.addArgument(argument);
+			}
+
+			return invocationExpression;
+		}
+
+		return referenceExpression;
+	}
+
+	private void processLambdaExpression(IMethodBinding interfaceMethod, CSMethod method) {
+		LambdaExpression node = (LambdaExpression) _node;
+		for (Object p : node.parameters()) {
 			mapParameter((VariableDeclaration) p, method);
 		}
+
 		CSBlock saved = _currentBlock;
 		_currentBlock = method.body();
 		_currentContinueLabel = null;
-		final ASTNode body = _node.getBody();
+		final ASTNode body = node.getBody();
 		if (body instanceof Block) {
 			body.accept(this);
 		} else {
-			Expression expression = (Expression) body;
-			if (isJavaLangVoid(methodBinding.getReturnType())) {
-				method.body().addStatement(mapExpression(expression));
-			} else {
-				method.body().addStatement(new CSReturnStatement(-1, mapExpression(expression)));
-			}
+			addExpressionStatement(interfaceMethod, method, mapExpression((Expression) body));
 		}
 		_currentBlock = saved;
+	}
 
-		_type.addMember(method);
+	private void addExpressionStatement(IMethodBinding interfaceMethod, CSMethod method, CSExpression expression) {
+		if (isJavaLangVoid(interfaceMethod.getReturnType())) {
+			method.body().addStatement(expression);
+		} else {
+			method.body().addStatement(new CSReturnStatement(-1, expression));
+		}
 	}
 
 	private int flushCapturedVariables() {
@@ -233,12 +314,18 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 					IVariableBinding variable = (IVariableBinding)binding;
 					if (!variable.isField()) {
 						final IMethodBinding declaringMethod = variable.getDeclaringMethod();
-						return declaringMethod != _currentMethodBinding && declaringMethod != _node.resolveMethodBinding();
+						return declaringMethod != _currentMethodBinding && declaringMethod != getResolveMethodBinding();
 					}
 				}
 				return false;
 			}
 		});
+	}
+
+	private IMethodBinding getResolveMethodBinding() {
+		if (_node instanceof LambdaExpression)
+		return ((LambdaExpression)_node).resolveMethodBinding();
+		return  null;
 	}
 
 }

@@ -51,6 +51,11 @@ public class LambdaExpressionConversionTest extends AbstractConversionTestCase {
 		runResourceTestCase("CaptureFields2");
 	}
 
+	@Test
+	public void testMethodReference() throws Throwable {
+		runResourceTestCase("MethodReference");
+	}
+
 	@Override
 	protected void runResourceTestCase(String resourceName) throws IOException, CoreException {
 		super.runResourceTestCase(resourcePath(resourceName));

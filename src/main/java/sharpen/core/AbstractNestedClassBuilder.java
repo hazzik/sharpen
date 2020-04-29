@@ -73,7 +73,7 @@ public abstract class AbstractNestedClassBuilder extends CSharpBuilder {
 		return new CSMemberReferenceExpression(target, mappedName(name));
 	}
 
-	private CSExpression createEnclosingTargetReferences(SimpleName name) {
+	protected CSExpression createEnclosingTargetReferences(SimpleName name) {
 		ITypeBinding enclosingClassBinding = getDeclaringClass(name);
 		
 		CSExpression target = isStaticMember(name)
