@@ -101,7 +101,9 @@ public abstract class Configuration {
 	private boolean _junitConvert;
 
 	private boolean _flatNamespaceDirectoryStructure;
-	
+
+	private int _csharpVersion = 6;
+
 	private String _sharpenNamespace = "Sharpen";
 
 	private List<String> _fullyQualifiedTypes = new ArrayList<String>();
@@ -577,4 +579,11 @@ public abstract class Configuration {
 
 	public abstract boolean mapByteToSbyte();
 
+	public void setCSharpVersion(int version) {
+		_csharpVersion = version;
+	}
+
+	public int getCSharpVersion() {
+		return _csharpVersion;
+	}
 }

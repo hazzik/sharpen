@@ -26,6 +26,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 package sharpen.core.csharp.ast;
 
 public enum CSVisibility {
+	Default { @Override public String toString() {return "";} },
 	Private,
 	Internal,
 	Protected,

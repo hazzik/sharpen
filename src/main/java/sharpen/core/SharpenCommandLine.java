@@ -24,8 +24,8 @@ package sharpen.core;
 import java.util.*;
 
 public class SharpenCommandLine {
-	
-	public static SharpenCommandLine parse(String[] args) {
+
+    public static SharpenCommandLine parse(String[] args) {
 		return new SharpenCommandLineParser(args).commandLine();
 	}
 	
@@ -92,4 +92,5 @@ public class SharpenCommandLine {
 	public String outputFolder;
 	public String sharpenNamespace;
 	public boolean help;
+	public int csharpVersion;
 }

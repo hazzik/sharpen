@@ -241,6 +241,9 @@ public class SharpenApplication {
 		if (_args.configJarFilePath != null) {
 			ods("Specified configuration jar file: " + _args.configJarFilePath);
 		}
+		if (_args.csharpVersion != 0){
+			configuration.setCSharpVersion(_args.csharpVersion);
+		}
 		configuration.mapEventAdds(_args.eventAddMappings);
 		configuration.mapEvents(_args.eventMappings);
 		configuration.mapNamespaces(_args.namespaceMappings);

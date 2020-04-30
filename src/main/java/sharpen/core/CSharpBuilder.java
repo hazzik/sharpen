@@ -746,7 +746,7 @@ public class CSharpBuilder extends ASTVisitor {
 		final String typeName = typeName(node);
 		if (node instanceof TypeDeclaration && ((TypeDeclaration)node).isInterface()) {
 			ITypeBinding interfaceType = node.resolveBinding();
-			boolean valid = isValidCSInterface(interfaceType) && !hasDefaultOrStaticMethods(node.resolveBinding());
+			boolean valid = isValidCSInterface(interfaceType) && (!hasDefaultOrStaticMethods(node.resolveBinding()) || supportsDefaultInterfaceMethods());
 			if (valid && auxillary) {
 				return null;
 			} else if (valid || (!auxillary && _configuration.separateInterfaceConstants())) {
@@ -783,6 +783,10 @@ public class CSharpBuilder extends ASTVisitor {
 		}
 
 		return new CSClass(typeName, modifier);
+	}
+
+	private boolean supportsDefaultInterfaceMethods() {
+		return _configuration.getCSharpVersion() >= 8;
 	}
 
 	private String typeName(AbstractTypeDeclaration node) {
@@ -951,6 +955,11 @@ public class CSharpBuilder extends ASTVisitor {
 			_currentType = saved;
 			_currentAuxillaryType = savedAuxillary;
 		}
+	}
+
+	private void mapVisibility(MethodDeclaration node, CSMember member) {
+		CSVisibility visibility = _currentType.isInterface() ? CSVisibility.Default : mapVisibility(node);
+		member.visibility(visibility);
 	}
 
 	private void mapVisibility(BodyDeclaration node, CSMember member) {
@@ -1851,10 +1860,9 @@ public class CSharpBuilder extends ASTVisitor {
 				vis = CSVisibility.Protected;
 			method.visibility(vis);
 		}
-		else if (node.resolveBinding().getDeclaringClass().isInterface())
-			method.visibility(CSVisibility.Public);
-		else
+		else {
 			mapVisibility(node, method);
+		}
 	}
 	
 	private String mappedMethodDeclarationName(MethodDeclaration node) {
@@ -3972,7 +3980,7 @@ public class CSharpBuilder extends ASTVisitor {
 		int modifiers = method.getModifiers();
 		if (_currentType.isInterface() || method.resolveBinding().getDeclaringClass().isInterface()) {
 			if (Modifier.isDefault(modifiers))
-				return CSMethodModifier.Virtual;
+				return supportsDefaultInterfaceMethods() ? CSMethodModifier.None : CSMethodModifier.Virtual;
 			if (Modifier.isStatic(modifiers))
 				return CSMethodModifier.Static;
 			return CSMethodModifier.Abstract;

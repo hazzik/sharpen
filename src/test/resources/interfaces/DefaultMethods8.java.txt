@@ -1,0 +1,6 @@
+package interfaces;
+
+public interface DefaultMethods8 {
+    default void aMethod() {
+    }
+}
