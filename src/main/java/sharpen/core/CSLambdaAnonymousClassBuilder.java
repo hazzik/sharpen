@@ -118,20 +118,24 @@ public class CSLambdaAnonymousClassBuilder extends AbstractNestedClassBuilder {
 
 	@Override
 	public boolean visit(ThisExpression node) {
-		//ThisExpression always means _enclosing
-		if (null == node.getQualifier()) {
-			pushExpression(createEnclosingThisReference(null, true));
-			return false;
-		} else {
-			pushExpression(createEnclosingThisReference(node.getQualifier().resolveTypeBinding(), true));
-			return false;
-		}
+		//This always means _enclosing.
+		pushExpression(createEnclosingThisReference(node.resolveTypeBinding(), true));
+		return false;
 	}
 
 	@Override
 	protected CSExpression createEnclosingThisReference(ITypeBinding enclosingClassBinding, boolean ignoreSuperclass) {
-		//We do not have superclass
-		return super.createEnclosingThisReference(enclosingClassBinding, true);
+		requireEnclosingReference();
+		CSExpression enclosing = new CSMemberReferenceExpression(new CSThisExpression(), "_enclosing");
+		ITypeBinding binding = _currentTypeBinding;
+		ITypeBinding to = enclosingClassBinding;
+		while (binding != to) {
+			enclosing = new CSMemberReferenceExpression(enclosing, "_enclosing");
+
+			binding = binding.getDeclaringClass();
+			if (null == binding) break;
+		}
+		return enclosing;
 	}
 
 	private String anonymousInnerClassName() {

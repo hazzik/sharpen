@@ -61,6 +61,8 @@ public class CSharpBuilder extends ASTVisitor {
 
 	protected CSTypeDeclaration _currentType;
 
+	protected ITypeBinding _currentTypeBinding;
+
 	protected CSTypeDeclaration _currentAuxillaryType;
 
 	private String _content;
@@ -127,6 +129,7 @@ public class CSharpBuilder extends ASTVisitor {
 		_currentExpression = other._currentExpression;
 		_currentMethod = other._currentMethod;
 		_currentBodyDeclaration = other._currentBodyDeclaration;
+		_currentTypeBinding = other._currentTypeBinding;
 	}
 
 	public void setSourceCompilationUnit(CompilationUnit ast) {
@@ -914,8 +917,10 @@ public class CSharpBuilder extends ASTVisitor {
 
 		CSTypeDeclaration saved = _currentType;
 		CSTypeDeclaration savedAuxillary = _currentAuxillaryType;
+		ITypeBinding savedTypeBinding = _currentTypeBinding;
 		_currentType = type;
 		_currentAuxillaryType = auxillaryType;
+		_currentTypeBinding = node.resolveBinding();
 		try {
 			if (node instanceof EnumDeclaration) {
 				visit(((EnumDeclaration)node).enumConstants());
@@ -926,6 +931,7 @@ public class CSharpBuilder extends ASTVisitor {
 		} finally {
 			_currentType = saved;
 			_currentAuxillaryType = savedAuxillary;
+			_currentTypeBinding = savedTypeBinding;
 		}
 	}
 

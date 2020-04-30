@@ -1,0 +1,20 @@
+package lambdas;
+
+import java.util.function.Function;
+
+public class NestedInAnonymousClass {
+	public Runnable createRunnable() {
+		return new Runnable() {
+			Function<Integer, Integer> r1 = y -> test();
+			Function<Integer, Integer> r2 = y -> NestedInAnonymousClass.this.test();
+			public void run() {
+				Function<Integer, Integer> r3 = y -> test();
+				Function<Integer, Integer> r4 = y -> NestedInAnonymousClass.this.test();
+			}
+		};
+	};
+
+	public Integer test () {
+		return 0;
+	}
+}

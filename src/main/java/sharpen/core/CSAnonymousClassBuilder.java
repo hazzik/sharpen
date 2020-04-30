@@ -104,6 +104,8 @@ public class CSAnonymousClassBuilder extends AbstractNestedClassBuilder {
     }
 
 	public void run() {
+		ITypeBinding savedTypeBinding = _currentTypeBinding;
+		_currentTypeBinding = _node.resolveBinding();
 		captureExternalLocalVariables();
 		setUpAnonymousType();
 		setUpConstructor();
@@ -111,13 +113,17 @@ public class CSAnonymousClassBuilder extends AbstractNestedClassBuilder {
 		int capturedVariableCount = flushCapturedVariables();
 		flushFieldInitializers();
 		flushInstanceInitializers(_type, capturedVariableCount);
+		_currentTypeBinding = savedTypeBinding;
 	}
 
 	private void flushFieldInitializers() {
-		
+		CSTypeDeclaration saved = _currentType;
+		_currentType = _type;
+
 		for (VariableDeclarationFragment field : _fieldInitializers) {
 			addToConstructor(createFieldAssignment(fieldName(field), mapExpression(field.getInitializer())));
 		}
+		_currentType = saved;
 	}
 	
 	@Override
@@ -145,9 +151,18 @@ public class CSAnonymousClassBuilder extends AbstractNestedClassBuilder {
 		_currentType.addMember(builder.type());
 		return false;
 	}
-	
+
+	public boolean visit(LambdaExpression node) {
+		CSLambdaAnonymousClassBuilder builder = new CSLambdaAnonymousClassBuilder(this, node);
+		if (builder.isEnclosingReferenceRequired()) {
+			requireEnclosingReference();
+		}
+		_currentType.addMember(builder.type());
+		pushExpression(builder.createConstructorInvocation());
+		return false;
+	}
+
 	private void captureNeededVariables(CSAnonymousClassBuilder builder) {
-		
 		IMethodBinding currentMethod = currentMethodDeclarationBinding();
 		for (IVariableBinding variable : builder.capturedVariables()) {
 			IMethodBinding method = variable.getDeclaringMethod();
@@ -262,6 +277,10 @@ public class CSAnonymousClassBuilder extends AbstractNestedClassBuilder {
 				_currentMethodBinding = node.resolveBinding();
 				node.getBody().accept(this);
 				_currentMethodBinding = saved;
+				return false;
+			}
+
+			public boolean visit(LambdaExpression node) {
 				return false;
 			}
 			
