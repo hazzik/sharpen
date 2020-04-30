@@ -156,6 +156,8 @@ class SharpenCommandLineParser extends CommandLineParser {
 			_cmdLine.sharpenNamespace = consumeNext();	
 		} else if (areEqual(arg, "-help")) {
 			_cmdLine.help = true;		
+		} else if (areEqual(arg, "-csharpVersion")) {
+			_cmdLine.csharpVersion = Integer.parseInt(consumeNext());
 		} else {
 			_cmdLine.help = true;
 		}
