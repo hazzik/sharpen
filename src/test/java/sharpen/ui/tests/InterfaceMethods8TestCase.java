@@ -6,15 +6,22 @@ import sharpen.core.Configuration;
 
 import java.io.IOException;
 
-public class InterfaceMethodsTestCase extends AbstractConversionTestCase {
+public class InterfaceMethods8TestCase extends AbstractConversionTestCase {
 	@Test
 	public void testDefaultMethods() throws Throwable {
-		runResourceTestCase("DefaultMethods");
+		runResourceTestCase("DefaultMethods8");
 	}
 
 	@Test
 	public void testStaticMethods() throws Throwable {
-		runResourceTestCase("StaticMethods");
+		runResourceTestCase("StaticMethods8");
+	}
+
+	@Override
+	protected Configuration getConfiguration() {
+		Configuration configuration = super.getConfiguration();
+		configuration.setCSharpVersion(8);
+		return configuration;
 	}
 
 	@Override

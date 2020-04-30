@@ -1,0 +1,9 @@
+namespace interfaces
+{
+	public interface DefaultMethods8
+	{
+		void aMethod()
+		{
+		}
+	}
+}

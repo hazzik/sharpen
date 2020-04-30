@@ -296,8 +296,10 @@ public class CSharpPrinter extends CSVisitor {
 		if (isExplicitMember(member)) return;
 		
 		CSVisibility visibility = member.visibility();
-		write(visibility.toString().toLowerCase());
-		write(" ");
+		if (visibility != CSVisibility.Default) {
+			write(visibility.toString().toLowerCase());
+			write(" ");
+		}
 	}
 
 	private boolean isExplicitMember(CSMember member) {
@@ -380,11 +382,11 @@ public class CSharpPrinter extends CSVisitor {
 	}
 
 	private void writeMethodHeader(CSMember member, CSMethodModifier modifiers) {
+		writeVisibility(member);
 		if (!_currentType.isInterface()) {
-			writeVisibility(member);
 			write(methodModifier(modifiers));
 		} else {
-			writeIndentation();
+			write(interfaceMethodModifier(modifiers));
 		}
 	}
 
@@ -993,7 +995,14 @@ public class CSharpPrinter extends CSVisitor {
 		}
 		return "";
 	}
-	
+
+	private String interfaceMethodModifier(CSMethodModifier modifier) {
+		switch (modifier) {
+		case Static: return "static ";
+		}
+		return "";
+	}
+
 	interface Closure {
 		void execute();
 	}
