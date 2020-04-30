@@ -4,7 +4,10 @@ namespace lambdas
 	{
 		public virtual void run()
 		{
-			java.util.function.Function<int, int> x = new _Function_7(this);
+			java.util.function.Function<int, int> x1 = new _Function_7(this);
+			java.util.function.Function<int, int> x2 = new _Function_8(this);
+			java.util.function.Function<int, int> x3 = new _Function_9(this);
+			java.util.function.Function<int, int> x4 = new _Function_10(this);
 		}
 
 		private sealed class _Function_7 : java.util.function.Function<int, int>
@@ -25,6 +28,90 @@ namespace lambdas
 			private readonly Nested _enclosing;
 
 			public _Function_7(Nested _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		private sealed class _Function_8 : java.util.function.Function<int, int>
+		{
+			public int apply(int z)
+			{
+				return z;
+			}
+		}
+
+		private sealed class _Function_8 : java.util.function.Function<int, int>
+		{
+			public int apply(int y)
+			{
+				return this._enclosing.test(new _Function_8());
+			}
+
+			private readonly Nested _enclosing;
+
+			public _Function_8(Nested _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		private sealed class _Function_9 : java.util.function.Function<int, int>
+		{
+			public int apply(int z)
+			{
+				return z;
+			}
+		}
+
+		private sealed class _Function_9 : java.util.function.Function<int, int>
+		{
+			public int apply(int y)
+			{
+				return this._enclosing.test(new _Function_9());
+			}
+
+			private readonly Nested _enclosing;
+
+			public _Function_9(Nested _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		private sealed class _Function_10 : java.util.function.Function<int, int>
+		{
+			public int apply(int z)
+			{
+				return z;
+			}
+		}
+
+		private sealed class _Function_10 : java.util.function.Function<int, int>
+		{
+			public int apply(int w)
+			{
+				return this._enclosing.test(new _Function_10());
+			}
+
+			private readonly Nested _enclosing;
+
+			public _Function_10(Nested _enclosing)
+			{
+				this._enclosing = _enclosing;
+			}
+		}
+
+		private sealed class _Function_10 : java.util.function.Function<int, int>
+		{
+			public int apply(int y)
+			{
+				return this._enclosing.test(new _Function_10(this));
+			}
+
+			private readonly Nested _enclosing;
+
+			public _Function_10(Nested _enclosing)
 			{
 				this._enclosing = _enclosing;
 			}

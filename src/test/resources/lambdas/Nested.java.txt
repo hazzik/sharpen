@@ -4,7 +4,10 @@ import java.util.function.Function;
 
 public class Nested {
 	public void run() {
-		Function<Integer, Integer> x = y -> test(z->z);
+		Function<Integer, Integer> x1 = y -> test(z->z);
+		Function<Integer, Integer> x2 = y -> this.test(z->z);
+		Function<Integer, Integer> x3 = y -> Nested.this.test(z->z);
+		Function<Integer, Integer> x4 = y -> test(w -> test(z->z));
 	}
 
 	public Integer test (Function<Integer, Integer> another) {

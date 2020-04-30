@@ -1,0 +1,97 @@
+namespace lambdas
+{
+	public class NestedInAnonymousClass
+	{
+		public virtual java.lang.Runnable createRunnable()
+		{
+			return new _Runnable_7(this);
+		}
+
+		private sealed class _Runnable_7 : java.lang.Runnable
+		{
+			public _Runnable_7(NestedInAnonymousClass _enclosing)
+			{
+				this._enclosing = _enclosing;
+				this.r1 = new _Function_8(this);
+				this.r2 = new _Function_9(this);
+			}
+
+			internal java.util.function.Function<int, int> r1;
+
+			internal java.util.function.Function<int, int> r2;
+
+			public void run()
+			{
+				java.util.function.Function<int, int> r3 = new _Function_11(this);
+				java.util.function.Function<int, int> r4 = new _Function_12(this);
+			}
+
+			private sealed class _Function_11 : java.util.function.Function<int, int>
+			{
+				public int apply(int y)
+				{
+					return this._enclosing._enclosing.test();
+				}
+
+				private readonly _Runnable_7 _enclosing;
+
+				public _Function_11(_Runnable_7 _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+			}
+
+			private sealed class _Function_12 : java.util.function.Function<int, int>
+			{
+				public int apply(int y)
+				{
+					return this._enclosing._enclosing.test();
+				}
+
+				private readonly _Runnable_7 _enclosing;
+
+				public _Function_12(_Runnable_7 _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+			}
+
+			private readonly NestedInAnonymousClass _enclosing;
+
+			private sealed class _Function_8 : java.util.function.Function<int, int>
+			{
+				public int apply(int y)
+				{
+					return this._enclosing._enclosing.test();
+				}
+
+				private readonly _Runnable_7 _enclosing;
+
+				public _Function_8(_Runnable_7 _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+			}
+
+			private sealed class _Function_9 : java.util.function.Function<int, int>
+			{
+				public int apply(int y)
+				{
+					return this._enclosing._enclosing.test();
+				}
+
+				private readonly _Runnable_7 _enclosing;
+
+				public _Function_9(_Runnable_7 _enclosing)
+				{
+					this._enclosing = _enclosing;
+				}
+			}
+		}
+
+		public virtual int test()
+		{
+			return 0;
+		}
+	}
+}

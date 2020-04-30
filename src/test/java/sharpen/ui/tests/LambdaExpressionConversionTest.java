@@ -42,6 +42,11 @@ public class LambdaExpressionConversionTest extends AbstractConversionTestCase {
 	}
 
 	@Test
+	public void testNestedInAnonymousClass() throws Throwable {
+		runResourceTestCase("NestedInAnonymousClass");
+	}
+
+	@Test
 	public void testVoidExpression() throws Throwable {
 		runResourceTestCase("VoidExpression");
 	}
